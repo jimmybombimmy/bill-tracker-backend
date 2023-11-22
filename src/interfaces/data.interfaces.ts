@@ -1,15 +1,9 @@
 export interface TransactionDataInterface {
-  user_id: number;
+  user_id: string;
   name: string;
   type: string;
   frequency: string;
   created_at: number;
-}
-
-export interface PaymentTypesDataInterface {
-  type: string;
-  description: string;
-  examples: string;
 }
 
 export interface UserDataInterface {

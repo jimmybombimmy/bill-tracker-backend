@@ -18,12 +18,21 @@ const conn = process.env.DB_STRING!;
 export const connection = mongoose.createConnection(conn);
 
 const UserSchema = new mongoose.Schema({
-    username: String,
-    email: String,
-    hash: String,
-    salt: String,
-    admin: Boolean
+  username: String,
+  email: String,
+  hash: String,
+  salt: String,
+  admin: Boolean
 });
+
+const TransactionSchema = new mongoose.Schema({
+  user_id: String,
+  name: String,
+  type: String,
+  frequency: String,
+  created_at: Number
+})
 
 
 const User = connection.model('User', UserSchema);
+const Transaction = connection.model('Transaction', TransactionSchema)

@@ -17,4 +17,12 @@ const UserSchema = new mongoose.Schema({
     salt: String,
     admin: Boolean
 });
+const TransactionSchema = new mongoose.Schema({
+    user_id: String,
+    name: String,
+    type: String,
+    frequency: String,
+    created_at: Number
+});
 const User = connection.model('User', UserSchema);
+const Transaction = connection.model('Transaction', TransactionSchema);
