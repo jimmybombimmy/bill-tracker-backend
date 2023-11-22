@@ -1,5 +1,4 @@
-import MongoStore from "connect-mongo";
-import session from 'express-session'
+import mongoose from 'mongoose'
 
 import dotenv from 'dotenv';
 
@@ -9,20 +8,22 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-
 const ENV = process.env.NODE_ENV || 'test';
 dotenv.config({
   path: `${__dirname}/../../.env.${ENV}` //change this
 })
-const sessionStore = MongoStore.create({ mongoUrl: process.env.DB_STRING, collectionName: 'sessions_bt' })
+
+const conn = process.env.DB_STRING!;
+
+export const connection = mongoose.createConnection(conn);
+
+const UserSchema = new mongoose.Schema({
+    username: String,
+    email: String,
+    hash: String,
+    salt: String,
+    admin: Boolean
+});
 
 
-export default session({
-  secret: process.env.SECRET!,
-  resave: false,
-  saveUninitialized: true,
-  store: sessionStore, 
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 
-  } 
-})
+const User = connection.model('User', UserSchema);

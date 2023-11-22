@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js ",
-    "dev": "concurrently \"tsc -w\" \"nodemon ./dist/app.js\""
+    "dev": "tsc -w"
   },
   "keywords": [],
   "author": "",
