@@ -1,6 +1,6 @@
 // transactions.js
 
-import { TransactionDataInterface } from "../../interfaces/data.interfaces.js";
+import { TransactionDataInterface } from "../../../interfaces/data.interfaces.js";
 
 export const transactions: TransactionDataInterface[] = [
   // User 1 transactions

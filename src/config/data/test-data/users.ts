@@ -1,6 +1,6 @@
 // users.js
 
-import { UserDataInterface } from "../../interfaces/data.interfaces.js"
+import { UserDataInterface } from "../../../interfaces/data.interfaces.js"
 
 export const users: UserDataInterface[] = [
   {

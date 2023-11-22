@@ -1,7 +1,7 @@
 
 import { connection } from '../config/database.js'
-import { users } from '../data/test-data/users.js'
-import { transactions } from '../data/test-data/transactions.js';
+import { users } from './data/test-data/users.js'
+import { transactions } from './data/test-data/transactions.js';
 
 const User = connection.models.User
 const Transaction = connection.models.Transaction
