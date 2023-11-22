@@ -48,6 +48,16 @@ describe("GET /api/users", () => {
     });
   }),
   describe("Unsuccessful connection test(s)", () => {
+    test("404: Come back with error if route not correct", () => {
+      return request(app)
+        .get("/api/usernames")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 404: Page not found",
+          });
+        });
+    });
   });
 })
 

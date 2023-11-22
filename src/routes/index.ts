@@ -46,4 +46,6 @@ router.get('/api/login-failure', (req, res, next) => {
   res.status(401).send('login unsuccessful.');
 });
 
+router.get('/api/:anything', pageNotFound)
+
 export default router
