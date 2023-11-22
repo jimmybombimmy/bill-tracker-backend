@@ -7,12 +7,12 @@ app.use(express.json());
 app.use(databaseUse);
 app.use(passport.initialize());
 app.use(passport.session());
-//logs session and user info
-app.use((req, res, next) => {
-    console.log("session info", req.session); //session info - cookie for user
-    console.log("passport info", req.user); //passport info - user logged in
-    next();
-});
+/* -----uncomment to see session and passport info----- */
+// app.use((req, res, next) => {
+//   console.log("session info", req.session) //session info - cookie for user
+//   console.log("passport info", req.user) //passport info - user logged in
+//   next()
+// })
 export { app };
 app.use(routes);
 // const port = 9090  

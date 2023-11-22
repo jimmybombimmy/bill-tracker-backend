@@ -61,6 +61,53 @@ describe("GET /api/users", () => {
   });
 })
 
+describe("GET /api/users/user_id", () => {
+  describe("Successful connection test(s)", () => {
+    test("200: userId returns a single object", () => {
+      return request(app)
+        .get("/api/users/655b51a746341227e519c2dc")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body)
+          expect(typeof body).toBe("object");
+          expect(Array.isArray(body)).toBe(false);
+        });
+    }),
+      test("200: Article returns with a users information", () => {
+        return request(app)
+          .get("/api/users/655b51a746341227e519c2dc")
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body)
+            expect(body.username).toEqual("Piccolo123");
+            expect(body.email).toEqual("piccolo@namekian.com");
+          });
+      });
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    test("400: article fails if user_id is not hex value", () => {
+      return request(app)
+        .get("/api/users/wronguserinput123456789")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: 'Error 400 - Bad Request: User path must be a number'
+          });
+        });
+    }),
+    test("404: article fails if user_id hex value not in database", () => {
+      return request(app)
+        .get("/api/users/111b51a746341227e519c2dc")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: 'Error 404: User ID not found'
+          });
+        });
+    });
+  });
+});
+
 describe("POST /api/register", () => {
   describe("Successful connection test(s)", () => {
     test("201: Registered user returns message saying that login was successful", async () => {

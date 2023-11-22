@@ -1,3 +1,10 @@
+export const error400 = ((res, reason) => {
+    if (reason === 'userNotHex') {
+        res.status(400).send({
+            message: 'Error 400 - Bad Request: User path must be a number'
+        });
+    }
+});
 export const error404 = ((res, reason) => {
     if (reason === 'pageNotFound') {
         res.status(404).send({
