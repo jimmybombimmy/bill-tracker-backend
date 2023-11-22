@@ -4,6 +4,7 @@ import { genPassword } from "../lib/passwordUtils.js";
 import {connection} from '../config/database.js'
 import { isAuth } from "./authMiddleware.js";
 import { getAllUsers } from "./controllers/users.controller.js";
+import { pageNotFound } from "./errors.js";
 
 
 

@@ -3,6 +3,7 @@ import passport from "passport";
 import { genPassword } from "../lib/passwordUtils.js";
 import { connection } from '../config/database.js';
 import { getAllUsers } from "./controllers/users.controller.js";
+import { pageNotFound } from "./errors.js";
 const router = Router();
 const User = connection.models.User;
 router.get('/api/users', getAllUsers);
