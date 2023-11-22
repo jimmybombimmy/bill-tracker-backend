@@ -34,7 +34,6 @@ describe("GET /api/users", () => {
         .expect(200)
         .then(({ body }) => {
           if (body.length > 0) {
-            console.log(body)
             body.map((user) => {
               expect(user).toHaveProperty("_id", expect.any(String));
               expect(user).toHaveProperty("username", expect.any(String));
@@ -68,7 +67,6 @@ describe("GET /api/users/user_id", () => {
         .get("/api/users/655b51a746341227e519c2dc")
         .expect(200)
         .then(({ body }) => {
-          console.log(body)
           expect(typeof body).toBe("object");
           expect(Array.isArray(body)).toBe(false);
         });
@@ -78,7 +76,6 @@ describe("GET /api/users/user_id", () => {
           .get("/api/users/655b51a746341227e519c2dc")
           .expect(200)
           .then(({ body }) => {
-            console.log(body)
             expect(body.username).toEqual("Piccolo123");
             expect(body.email).toEqual("piccolo@namekian.com");
           });
@@ -110,7 +107,7 @@ describe("GET /api/users/user_id", () => {
 
 describe("POST /api/register", () => {
   describe("Successful connection test(s)", () => {
-    test("201: Registered user returns message saying that login was successful", async () => {
+    test("201: Registered user returns message saying that login was successful and user is stored in database", async () => {
       const userReg = {
         username: "Gohan123",
         email: "gohan@satancity.com",
@@ -120,9 +117,24 @@ describe("POST /api/register", () => {
         .post("/api/register")
         .send(userReg)
         .expect(201)
-        .then(({ body }) => {
-          expect(body.message).toBe("login successful");
+        .then((result) => {
+          expect(result.body.message).toBe("Registration Successful");
         });
+
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({body}) => {
+          const userReturn = body[body.length - 1]
+          expect(userReturn.username).toBe("Gohan123")
+          expect(userReturn.email).toBe("gohan@satancity.com")
+          expect(typeof userReturn.hash).toBe('string')
+          expect(typeof userReturn._id).toBe('string')
+          expect(typeof userReturn.salt).toBe('string')
+          for (let prop in userReturn) {
+            expect(userReturn[prop]).not.toEqual("test123")
+          }
+        })
     });
   });
   describe("Unsuccessful connection test(s)", () => {});
