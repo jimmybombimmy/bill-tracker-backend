@@ -1,5 +1,5 @@
 import express from "express"
-import { getAllUsersModel, getUserByIdModel } from "../models/users.models.js"
+import { getAllUsersModel, getUserByIdModel } from "../models/users.model.js"
 import { error400, error404} from "../errors.js"
 
 

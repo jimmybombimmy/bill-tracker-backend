@@ -137,5 +137,38 @@ describe("POST /api/register", () => {
         })
     });
   });
-  describe("Unsuccessful connection test(s)", () => {});
+  describe("Unsuccessful connection test(s)", () => {
+    test("409: username should not match existing username", () => {
+      const userRegBad1 = {
+        username: "Vegeta123",
+        email: "vegeta@planetvegeta.com",
+        password: "test",
+      };
+      return request(app)
+        .post("/api/register")
+        .send(userRegBad1)
+        .expect(409)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 409: Username already exists",
+          });
+        });
+    });
+    test("409: email should not match existing email", () => {
+      const userRegBad1 = {
+        username: "Goten123",
+        email: "goku@kamehouse.com",
+        password: "test",
+      };
+      return request(app)
+        .post("/api/register")
+        .send(userRegBad1)
+        .expect(409)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 409: Email already exists",
+          });
+        });
+    });
+  });
 });

@@ -20,6 +20,12 @@ export const error404 = ((res: express.Response, reason: string) => {
   }
 })
 
+export const error409 = ((res: express.Response, reason: object) => {
+  res.status(409).send({
+    message: `Error 409: ${reason}`
+  })
+})
+
 export const pageNotFound = ((req: express.Request, res: express.Response) => {
   return error404(res, 'pageNotFound')
 })
