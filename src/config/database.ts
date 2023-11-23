@@ -34,5 +34,5 @@ const TransactionSchema = new mongoose.Schema({
 })
 
 
-const User = connection.model('User', UserSchema);
-const Transaction = connection.model('Transaction', TransactionSchema)
+export const User = connection.model('User', UserSchema);
+export const Transaction = connection.model('Transaction', TransactionSchema)

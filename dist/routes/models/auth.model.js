@@ -1,6 +1,6 @@
 import { connection } from '../../config/database.js';
 const User = connection.models.User;
-export const registerUserByIdModel = (async (newUser, res) => {
+export const registerUserModel = (async (newUser, res) => {
     const existingUser = await User.findOne({
         $or: [
             { username: newUser.username },

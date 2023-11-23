@@ -8,6 +8,12 @@ export const error400 = ((res: express.Response, reason: string) => {
   }
 })
 
+export const error401 = ((res: express.Response, reason: string) => {
+  if (reason === 'userNotMatched') {
+    res.status(401).send({message: 'Error 401: Username or Password is incorrect'})
+  }
+})
+
 export const error404 = ((res: express.Response, reason: string) => {
   if (reason === 'pageNotFound') {
     res.status(404).send({

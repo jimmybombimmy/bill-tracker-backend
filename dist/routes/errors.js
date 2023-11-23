@@ -5,6 +5,11 @@ export const error400 = ((res, reason) => {
         });
     }
 });
+export const error401 = ((res, reason) => {
+    if (reason === 'userNotMatched') {
+        res.status(401).send({ message: 'Error 401: Username or Password is incorrect' });
+    }
+});
 export const error404 = ((res, reason) => {
     if (reason === 'pageNotFound') {
         res.status(404).send({

@@ -1,11 +1,12 @@
 import express from 'express'
+import passport from 'passport'
 import { genPassword } from '../../lib/passwordUtils.js'
 import {connection} from '../../config/database.js'
-import { registerUserByIdModel } from '../models/auth.model.js'
-import { error409 } from '../errors.js'
+import { registerUserModel } from '../models/auth.model.js'
+import { error401, error409 } from '../errors.js'
 const User = connection.models.User
 
-export const registerUserById = ((req: express.Request, res: express.Response) => {
+export const registerUser = ((req: express.Request, res: express.Response) => {
   
   const saltHash = genPassword(req.body.password)
 
@@ -17,7 +18,7 @@ export const registerUserById = ((req: express.Request, res: express.Response) =
     admin: false
   })
 
-  registerUserByIdModel(newUser, res)
+  registerUserModel(newUser, res)
   .then((result) => {
     if (result.message === 'Username already exists' || result.message === 'Email already exists') {
       return error409(res, result.message)
@@ -26,4 +27,20 @@ export const registerUserById = ((req: express.Request, res: express.Response) =
     }
   })
 
+})
+
+export const loginUser = ((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    passport.authenticate('local', (err: object, user: object) => {
+      if (!user) {
+        return error401(res, 'userNotMatched');
+      }
+  
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.status(201).send({message: 'Login successful', user: user._id});
+  
+      });
+    })(req, res, next);
 })

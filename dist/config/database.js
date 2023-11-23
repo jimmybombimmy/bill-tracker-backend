@@ -24,5 +24,5 @@ const TransactionSchema = new mongoose.Schema({
     frequency: String,
     created_at: Number
 });
-const User = connection.model('User', UserSchema);
-const Transaction = connection.model('Transaction', TransactionSchema);
+export const User = connection.model('User', UserSchema);
+export const Transaction = connection.model('Transaction', TransactionSchema);

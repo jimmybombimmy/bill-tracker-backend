@@ -172,3 +172,56 @@ describe("POST /api/register", () => {
     });
   });
 });
+
+describe("POST /api/login", () => {
+  describe("Successful connection test(s)", () => {
+    test("201: Allow user to log in or something", () => {
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+      return request(app)
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Login successful",
+            user: "655b50b42e2bcd090b435230"
+          });
+        });
+    });
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    test("401: will give an error if username does not match", () => {
+      const badUserLogin1 = {
+        username: "Tofu123",
+        password: "test",
+      };
+      return request(app)
+        .post("/api/login")
+        .send(badUserLogin1)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 401: Username or Password is incorrect",
+          });
+        });
+    }),
+    test("401: will give an error if username does not match", () => {
+      const badUserLogin2 = {
+        username: "Goku123",
+        password: "incorrectpassword",
+      };
+      return request(app)
+        .post("/api/login")
+        .send(badUserLogin2)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 401: Username or Password is incorrect",
+          });
+        });
+    });
+  });
+});
