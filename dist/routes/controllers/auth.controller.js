@@ -32,7 +32,13 @@ export const loginUser = ((req, res, next) => {
             if (err) {
                 return next(err);
             }
-            return res.status(201).send({ message: 'Login successful', user: user._id });
+            return res.redirect('/api/login-success');
         });
     })(req, res, next);
+});
+export const loginSuccess = ((req, res, next) => {
+    console.log(req.session);
+    res.status(201).send({
+        message: "Login successful",
+    });
 });

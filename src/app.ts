@@ -17,17 +17,19 @@ app.use(session)
 app.use(passport.initialize())
 app.use(passport.session())
 
-
-
-export {app} 
-
-app.use(routes);
-
 // app.use((req, res, next) => {
 //   console.log("session info", req.session) //session info - cookie for user
 //   console.log("passport info", req.user) //passport info - user logged in
 //   next()
 // })
+
+export {app} 
+
+app.use(routes);
+
+
+
+
 
 
 /* -----uncomment to see session and passport info----- */

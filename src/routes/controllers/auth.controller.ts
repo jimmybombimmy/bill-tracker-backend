@@ -39,8 +39,16 @@ export const loginUser = ((req: express.Request, res: express.Response, next: ex
         if (err) {
           return next(err);
         }
-        return res.status(201).send({message: 'Login successful', user: user._id});
+        return res.redirect('/api/login-success')
+        
   
       });
     })(req, res, next);
+})
+
+export const loginSuccess = ((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.log(req.session)
+  res.status(201).send({
+    message: "Login successful",
+  });
 })

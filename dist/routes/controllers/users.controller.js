@@ -1,4 +1,4 @@
-import { getAllUsersModel, getUserByIdModel } from "../models/users.model.js";
+import { getAllUsersModel, getUserByIdModel } from "../models/users.models.js";
 import { error400, error404 } from "../errors.js";
 export const getAllUsers = ((req, res) => {
     getAllUsersModel()

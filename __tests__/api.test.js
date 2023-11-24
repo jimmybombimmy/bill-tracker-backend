@@ -1,9 +1,15 @@
 import { app } from "../dist/app.js";
 import request from "supertest";
-import 'jest-matcher-one-of'
+import session from "supertest-session";
+import "jest-matcher-one-of";
 import seed from "../dist/config/seed.js";
 
-beforeEach(() => seed());
+var testSession = null;
+
+beforeEach(() => {
+  seed();
+  testSession = session(app);
+});
 // afterAll(() => connection.end());
 
 ////////Test Template////////
@@ -29,37 +35,37 @@ describe("GET /api/users", () => {
           });
         });
     }),
-    test("200: if users > 0, return them with all necessary parameters", () => {
-      return request(app)
-        .get("/api/users")
-        .expect(200)
-        .then(({ body }) => {
-          if (body.length > 0) {
-            body.map((user) => {
-              expect(user).toHaveProperty("_id", expect.any(String));
-              expect(user).toHaveProperty("username", expect.any(String));
-              expect(user).toHaveProperty("email", expect.any(String));
-              expect(user).toHaveProperty("hash", expect.any(String));
-              expect(user).toHaveProperty("salt", expect.any(String));
-              expect(user).toHaveProperty("admin", expect.any(Boolean));
-            });
-          }
-        });
-    });
-  }),
-  describe("Unsuccessful connection test(s)", () => {
-    test("404: Come back with error if route not correct", () => {
-      return request(app)
-        .get("/api/usernames")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toMatchObject({
-            message: "Error 404: Page not found",
+      test("200: if users > 0, return them with all necessary parameters", () => {
+        return request(app)
+          .get("/api/users")
+          .expect(200)
+          .then(({ body }) => {
+            if (body.length > 0) {
+              body.map((user) => {
+                expect(user).toHaveProperty("_id", expect.any(String));
+                expect(user).toHaveProperty("username", expect.any(String));
+                expect(user).toHaveProperty("email", expect.any(String));
+                expect(user).toHaveProperty("hash", expect.any(String));
+                expect(user).toHaveProperty("salt", expect.any(String));
+                expect(user).toHaveProperty("admin", expect.any(Boolean));
+              });
+            }
           });
-        });
+      });
+  }),
+    describe("Unsuccessful connection test(s)", () => {
+      test("404: Come back with error if route not correct", () => {
+        return request(app)
+          .get("/api/usernames")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).toMatchObject({
+              message: "Error 404: Page not found",
+            });
+          });
+      });
     });
-  });
-})
+});
 
 describe("GET /api/users/:user_id", () => {
   describe("Successful connection test(s)", () => {
@@ -89,20 +95,20 @@ describe("GET /api/users/:user_id", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body).toMatchObject({
-            message: "Error 400 - Bad Request: User path must be a number"
+            message: "Error 400 - Bad Request: User path must be a number",
           });
         });
     }),
-    test("404: article fails if user_id hex value not in database", () => {
-      return request(app)
-        .get("/api/users/111b51a746341227e519c2dc")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toMatchObject({
-            message: "Error 404: User ID not found"
+      test("404: article fails if user_id hex value not in database", () => {
+        return request(app)
+          .get("/api/users/111b51a746341227e519c2dc")
+          .expect(404)
+          .then(({ body }) => {
+            expect(body).toMatchObject({
+              message: "Error 404: User ID not found",
+            });
           });
-        });
-    });
+      });
   });
 });
 
@@ -125,17 +131,17 @@ describe("POST /api/register", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
-        .then(({body}) => {
-          const userReturn = body[body.length - 1]
-          expect(userReturn.username).toBe("Gohan123")
-          expect(userReturn.email).toBe("gohan@satancity.com")
-          expect(typeof userReturn.hash).toBe("string")
-          expect(typeof userReturn._id).toBe("string")
-          expect(typeof userReturn.salt).toBe("string")
+        .then(({ body }) => {
+          const userReturn = body[body.length - 1];
+          expect(userReturn.username).toBe("Gohan123");
+          expect(userReturn.email).toBe("gohan@satancity.com");
+          expect(typeof userReturn.hash).toBe("string");
+          expect(typeof userReturn._id).toBe("string");
+          expect(typeof userReturn.salt).toBe("string");
           for (let prop in userReturn) {
-            expect(userReturn[prop]).not.toEqual("test123")
+            expect(userReturn[prop]).not.toEqual("test123");
           }
-        })
+        });
     });
   });
   describe("Unsuccessful connection test(s)", () => {
@@ -176,19 +182,26 @@ describe("POST /api/register", () => {
 
 describe("POST /api/login", () => {
   describe("Successful connection test(s)", () => {
-    test("201: Allow user to log in or something", () => {
+    test.only("201: Allow user to log in", async () => {
       const userLogin1 = {
         username: "Goku123",
         password: "test",
       };
-      return request(app)
+      const preRedirect = await testSession
         .post("/api/login")
         .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      return testSession
+        .get(redirectedUrl)
         .expect(201)
-        .then(({ body }) => {
-          expect(body).toMatchObject({
+        .then((response) => {
+          expect(response.body).toMatchObject({
             message: "Login successful",
-            user: "655b50b42e2bcd090b435230"
           });
         });
     });
@@ -209,48 +222,99 @@ describe("POST /api/login", () => {
           });
         });
     }),
-    test("401: will give an error if username does not match", () => {
-      const badUserLogin2 = {
-        username: "Goku123",
-        password: "incorrectpassword",
-      };
-      return request(app)
-        .post("/api/login")
-        .send(badUserLogin2)
-        .expect(401)
-        .then(({ body }) => {
-          expect(body).toMatchObject({
-            message: "Error 401: Username or Password is incorrect",
+      test("401: will give an error if username does not match", () => {
+        const badUserLogin2 = {
+          username: "Goku123",
+          password: "incorrectpassword",
+        };
+        return request(app)
+          .post("/api/login")
+          .send(badUserLogin2)
+          .expect(401)
+          .then(({ body }) => {
+            expect(body).toMatchObject({
+              message: "Error 401: Username or Password is incorrect",
+            });
           });
-        });
-    });
+      });
   });
 });
 
-
-describe("200 /api/transactions/:user" , () => {
+describe("200 /api/transactions/:user", () => {
   describe("Successful connection test(s)", () => {
     test("200: retrieves transactions based on user_id", () => {
-      const userId = "655b5158c6965d869180e906"
+      const userId = "655b5158c6965d869180e906";
       return request(app)
         .get(`/api/transactions/${userId}`)
         .expect(200)
-        .then(({body}) => {
-          body.forEach(txn => {
-            expect(txn.user_id).toBe(userId)
-            expect(txn).toHaveProperty("_id", expect.any(String))
-            expect(txn).toHaveProperty("name", expect.any(String))
-            expect(txn).toHaveProperty("type", expect.any(String))
-            expect(txn.type).toBeOneOf(["Direct Debit", "Standing Order", "Recurring Payment"])
-            expect(txn).toHaveProperty("frequency", expect.any(String))
-            expect(txn).toHaveProperty("created_at", expect.any(Number))
-          })
-        })
-    })
+        .then(({ body }) => {
+          body.forEach((txn) => {
+            expect(txn.user_id).toBe(userId);
+            expect(txn).toHaveProperty("_id", expect.any(String));
+            expect(txn).toHaveProperty("name", expect.any(String));
+            expect(txn).toHaveProperty("type", expect.any(String));
+            expect(txn.type).toBeOneOf([
+              "Direct Debit",
+              "Standing Order",
+              "Recurring Payment",
+            ]);
+            expect(txn).toHaveProperty("frequency", expect.any(String));
+            expect(txn).toHaveProperty("created_at", expect.any(Number));
+          });
+        });
+    }),
+      test("200: User must be logged in to view transactions", async () => {
+        const userId = "655b5158c6965d869180e906";
+
+        const userLogin1 = {
+          username: "Vegeta123",
+          password: "test",
+        };
+
+        const loginResponse = await request(app)
+          .post("/api/login")
+          .send(userLogin1)
+          .expect(201)
+          .then((body) => {
+            return body;
+          });
+
+        const authCookie = loginResponse.req;
+        console.log("authCookie", authCookie);
+
+        return request(app)
+          .get(`/api/transactions/${userId}`)
+          .expect(200)
+          .send("Cookie", authCookie)
+          .then((result) => {
+            console.log(result.res);
+          });
+      });
     //test 2: make sure user is logged in to view txns
     //test 3: sends message if user has no transactions
-  })
+  });
   describe("Unsuccessful connection test(s)", () => {
     //user can not receive another others transactions
-  })
-})
+  });
+});
+
+//example test for redirecting routes
+// describe.only("Test redirect", () => {
+//   test("[STATUS CODE]: [DESCRIPTION]", async () => {
+//     const preRedirect = await request(app)
+//     .get('/testRedirect')
+//     .expect(302)
+
+//     const redirectedUrl = preRedirect.headers.location
+//     console.log(redirectedUrl)
+
+//     expect(redirectedUrl).toBe('/api/login-success')
+
+//     return request(app)
+//       .get(redirectedUrl)
+//       .expect(201)
+//       .then(({text}) => {
+//         console.log(text)
+//       })
+//   })
+// })
