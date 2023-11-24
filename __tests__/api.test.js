@@ -1,17 +1,18 @@
 import { app } from "../dist/app.js";
 import request from "supertest";
+import 'jest-matcher-one-of'
 import seed from "../dist/config/seed.js";
 
 beforeEach(() => seed());
 // afterAll(() => connection.end());
 
 ////////Test Template////////
-// describe('[REQUEST] [ENDPOINT]' , () => {
-//   describe('Successful connection test(s)', () => {
-//     test('[STATUS CODE]: [DESCRIPTION]', () => {
+// describe("[REQUEST] [ENDPOINT]" , () => {
+//   describe("Successful connection test(s)", () => {
+//     test("[STATUS CODE]: [DESCRIPTION]", () => {
 //     })
 //   })
-//   describe('Unsuccessful connection test(s)', () => {
+//   describe("Unsuccessful connection test(s)", () => {
 //   })
 // })
 
@@ -60,7 +61,7 @@ describe("GET /api/users", () => {
   });
 })
 
-describe("GET /api/users/user_id", () => {
+describe("GET /api/users/:user_id", () => {
   describe("Successful connection test(s)", () => {
     test("200: userId returns a single object", () => {
       return request(app)
@@ -88,7 +89,7 @@ describe("GET /api/users/user_id", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body).toMatchObject({
-            message: 'Error 400 - Bad Request: User path must be a number'
+            message: "Error 400 - Bad Request: User path must be a number"
           });
         });
     }),
@@ -98,7 +99,7 @@ describe("GET /api/users/user_id", () => {
         .expect(404)
         .then(({ body }) => {
           expect(body).toMatchObject({
-            message: 'Error 404: User ID not found'
+            message: "Error 404: User ID not found"
           });
         });
     });
@@ -128,9 +129,9 @@ describe("POST /api/register", () => {
           const userReturn = body[body.length - 1]
           expect(userReturn.username).toBe("Gohan123")
           expect(userReturn.email).toBe("gohan@satancity.com")
-          expect(typeof userReturn.hash).toBe('string')
-          expect(typeof userReturn._id).toBe('string')
-          expect(typeof userReturn.salt).toBe('string')
+          expect(typeof userReturn.hash).toBe("string")
+          expect(typeof userReturn._id).toBe("string")
+          expect(typeof userReturn.salt).toBe("string")
           for (let prop in userReturn) {
             expect(userReturn[prop]).not.toEqual("test123")
           }
@@ -225,3 +226,31 @@ describe("POST /api/login", () => {
     });
   });
 });
+
+
+describe("200 /api/transactions/:user" , () => {
+  describe("Successful connection test(s)", () => {
+    test("200: retrieves transactions based on user_id", () => {
+      const userId = "655b5158c6965d869180e906"
+      return request(app)
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({body}) => {
+          body.forEach(txn => {
+            expect(txn.user_id).toBe(userId)
+            expect(txn).toHaveProperty("_id", expect.any(String))
+            expect(txn).toHaveProperty("name", expect.any(String))
+            expect(txn).toHaveProperty("type", expect.any(String))
+            expect(txn.type).toBeOneOf(["Direct Debit", "Standing Order", "Recurring Payment"])
+            expect(txn).toHaveProperty("frequency", expect.any(String))
+            expect(txn).toHaveProperty("created_at", expect.any(Number))
+          })
+        })
+    })
+    //test 2: make sure user is logged in to view txns
+    //test 3: sends message if user has no transactions
+  })
+  describe("Unsuccessful connection test(s)", () => {
+    //user can not receive another others transactions
+  })
+})

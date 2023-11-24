@@ -1,6 +1,5 @@
 import express from 'express'
 import {connection} from '../../config/database.js'
-import { error400 } from '../errors.js'
 
 const User = connection.models.User
 

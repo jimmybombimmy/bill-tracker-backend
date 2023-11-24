@@ -5,7 +5,7 @@ import { error400, error404} from "../errors.js"
 
 export const getAllUsers = ((req: express.Request, res: express.Response) => {
   getAllUsersModel()
-    .then(result => {
+    .then((result: object) => {
       res.status(200).send(result)
     })
 })  
@@ -13,7 +13,7 @@ export const getAllUsers = ((req: express.Request, res: express.Response) => {
 export const getUserById = ((req: express.Request, res: express.Response) => {
   const user_id = req.params.user_id
   getUserByIdModel(user_id, res)
-    .then(result => {
+    .then((result: object) => {
       if (result) {
         res.status(200).send(result)
       } else {

@@ -2,14 +2,14 @@ import { getAllUsersModel, getUserByIdModel } from "../models/users.model.js";
 import { error400, error404 } from "../errors.js";
 export const getAllUsers = ((req, res) => {
     getAllUsersModel()
-        .then(result => {
+        .then((result) => {
         res.status(200).send(result);
     });
 });
 export const getUserById = ((req, res) => {
     const user_id = req.params.user_id;
     getUserByIdModel(user_id, res)
-        .then(result => {
+        .then((result) => {
         if (result) {
             res.status(200).send(result);
         }
