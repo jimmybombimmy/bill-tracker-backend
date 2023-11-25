@@ -5,7 +5,7 @@ import { isAuth } from "./authMiddleware.js";
 import { getAllUsers, getUserById } from "./controllers/users.controller.js";
 import { pageNotFound } from "./errors.js";
 import { loginSuccess, loginUser, logoutUser, registerUser } from "./controllers/auth.controller.js";
-import { getTransactionsById } from "./controllers/transactions.controller.js";
+import { getTransactionsById, postTransaction } from "./controllers/transactions.controller.js";
 
 
 
@@ -28,6 +28,7 @@ router.post('/api/logout', logoutUser);
 // Transaction Routes
 router.get('/api/transactions/:user_id', isAuth, getTransactionsById)
 
+router.post('/api/transactions', isAuth, postTransaction)
 
 // Page not found route
 router.get('/api/:anything', pageNotFound)

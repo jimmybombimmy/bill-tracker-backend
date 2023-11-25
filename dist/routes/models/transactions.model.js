@@ -5,3 +5,9 @@ export const getTransactionsByIdModel = (user_id) => {
         return txns;
     });
 };
+export const postTransactionModel = (transaction) => {
+    return Transaction.create(transaction)
+        .then(result => {
+        return result;
+    });
+};
