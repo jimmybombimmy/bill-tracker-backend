@@ -17,7 +17,7 @@ app.use(session)
 app.use(passport.initialize())
 app.use(passport.session())
 
-export let sessionInfo: object;
+export let sessionInfo: any;
 export let passportInfo: object|undefined
 
 app.use((req, res, next) => {

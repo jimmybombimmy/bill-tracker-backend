@@ -310,11 +310,43 @@ describe("200 /api/transactions/:user", () => {
           });
         });
     });
-
-    //test 2: sends message if user has no transactions
   });
   describe("Unsuccessful connection test(s)", () => {
-    //User must not be able to view transactions if not logged in
+    test("401: User can not view transactions if not logged in", () => {
+      const userId = "655b5158c6965d869180e906"
+
+      return testSession
+      .get(`/api/transactions/${userId}`)
+      .expect(401)
+      .then(({ body }) => {
+         expect(body.message).toBe('Error 401: User Authorization invalid')
+      })
+    })
+    test("401: User can not view transactions of another user", async () => {
+      const otherUserId = "655b50b42e2bcd090b435230";
+
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      return testSession
+        .get(`/api/transactions/${otherUserId}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe('Error 401: User is not authorized to view information')
+        })
+    })
     //user can not receive another others transactions
     
   });

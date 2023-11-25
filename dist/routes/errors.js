@@ -9,6 +9,9 @@ export const error401 = ((res, reason) => {
     if (reason === 'userNotMatched') {
         res.status(401).send({ message: 'Error 401: Username or Password is incorrect' });
     }
+    else if (reason === 'userNotAuthed') {
+        res.status(401).send({ message: 'Error 401: User is not authorized to view information' });
+    }
 });
 export const error404 = ((res, reason) => {
     if (reason === 'pageNotFound') {
