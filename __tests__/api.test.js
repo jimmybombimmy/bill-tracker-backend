@@ -3,14 +3,14 @@ import request from "supertest";
 import session from "supertest-session";
 import "jest-matcher-one-of";
 import seed from "../dist/config/seed.js";
+import { sessionInfo, passportInfo } from "../dist/app.js";
 
 var testSession = null;
 
 beforeEach(() => {
-  seed();
   testSession = session(app);
+  return seed();
 });
-// afterAll(() => connection.end());
 
 ////////Test Template////////
 // describe("[REQUEST] [ENDPOINT]" , () => {
@@ -182,7 +182,7 @@ describe("POST /api/register", () => {
 
 describe("POST /api/login", () => {
   describe("Successful connection test(s)", () => {
-    test.only("201: Allow user to log in", async () => {
+    test("201: Allow user to log in", async () => {
       const userLogin1 = {
         username: "Goku123",
         password: "test",
@@ -193,16 +193,48 @@ describe("POST /api/login", () => {
         .expect(302);
 
       const redirectedUrl = preRedirect.headers.location;
-
       expect(redirectedUrl).toBe("/api/login-success");
 
-      return testSession
+      await testSession
         .get(redirectedUrl)
         .expect(201)
         .then((response) => {
           expect(response.body).toMatchObject({
             message: "Login successful",
           });
+        });
+
+      return testSession
+        .post("/api/logout")
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toMatchObject({
+            message: "Logout successful",
+          });
+        });
+    });
+    test("201: Passport and Session tokens should be present after login", async () => {
+      const userId1 = "655b5158c6965d869180e906";
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      return testSession
+        .get(redirectedUrl)
+        .expect(201)
+        .then((response) => {
+          expect(sessionInfo.passport.user).toBe(userId1);
+          expect(passportInfo.username).toBe(userLogin1.username);
+          expect(passportInfo.password).not.toBe(userLogin1.password);
         });
     });
   });
@@ -242,9 +274,25 @@ describe("POST /api/login", () => {
 
 describe("200 /api/transactions/:user", () => {
   describe("Successful connection test(s)", () => {
-    test("200: retrieves transactions based on user_id", () => {
+    test("200: Receives all of users transactions when they are logged in", async () => {
       const userId = "655b5158c6965d869180e906";
-      return request(app)
+
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      return testSession
         .get(`/api/transactions/${userId}`)
         .expect(200)
         .then(({ body }) => {
@@ -252,7 +300,6 @@ describe("200 /api/transactions/:user", () => {
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
             expect(txn).toHaveProperty("name", expect.any(String));
-            expect(txn).toHaveProperty("type", expect.any(String));
             expect(txn.type).toBeOneOf([
               "Direct Debit",
               "Standing Order",
@@ -262,59 +309,13 @@ describe("200 /api/transactions/:user", () => {
             expect(txn).toHaveProperty("created_at", expect.any(Number));
           });
         });
-    }),
-      test("200: User must be logged in to view transactions", async () => {
-        const userId = "655b5158c6965d869180e906";
+    });
 
-        const userLogin1 = {
-          username: "Vegeta123",
-          password: "test",
-        };
-
-        const loginResponse = await request(app)
-          .post("/api/login")
-          .send(userLogin1)
-          .expect(201)
-          .then((body) => {
-            return body;
-          });
-
-        const authCookie = loginResponse.req;
-        console.log("authCookie", authCookie);
-
-        return request(app)
-          .get(`/api/transactions/${userId}`)
-          .expect(200)
-          .send("Cookie", authCookie)
-          .then((result) => {
-            console.log(result.res);
-          });
-      });
-    //test 2: make sure user is logged in to view txns
-    //test 3: sends message if user has no transactions
+    //test 2: sends message if user has no transactions
   });
   describe("Unsuccessful connection test(s)", () => {
+    //User must not be able to view transactions if not logged in
     //user can not receive another others transactions
+    
   });
 });
-
-//example test for redirecting routes
-// describe.only("Test redirect", () => {
-//   test("[STATUS CODE]: [DESCRIPTION]", async () => {
-//     const preRedirect = await request(app)
-//     .get('/testRedirect')
-//     .expect(302)
-
-//     const redirectedUrl = preRedirect.headers.location
-//     console.log(redirectedUrl)
-
-//     expect(redirectedUrl).toBe('/api/login-success')
-
-//     return request(app)
-//       .get(redirectedUrl)
-//       .expect(201)
-//       .then(({text}) => {
-//         console.log(text)
-//       })
-//   })
-// })

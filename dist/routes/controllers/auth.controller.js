@@ -23,8 +23,8 @@ export const registerUser = ((req, res) => {
         }
     });
 });
-export const loginUser = ((req, res, next) => {
-    passport.authenticate('local', (err, user) => {
+export const loginUser = (async (req, res, next) => {
+    await passport.authenticate('local', (err, user) => {
         if (!user) {
             return error401(res, 'userNotMatched');
         }
@@ -37,8 +37,18 @@ export const loginUser = ((req, res, next) => {
     })(req, res, next);
 });
 export const loginSuccess = ((req, res, next) => {
-    console.log(req.session);
     res.status(201).send({
         message: "Login successful",
+    });
+});
+export const logoutUser = (async (req, res, next) => {
+    req.logout(function (err) {
+        if (err) {
+            return next(err);
+        }
+        // res.redirect('/protected-route');
+        res.status(201).send({
+            message: "Logout successful",
+        });
     });
 });
