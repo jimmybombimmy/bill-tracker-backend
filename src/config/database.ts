@@ -30,7 +30,8 @@ const TransactionSchema = new mongoose.Schema({
   name: String,
   type: String,
   frequency: String,
-  created_at: Number
+  created_at: Number,
+  amount: Number
 })
 
 

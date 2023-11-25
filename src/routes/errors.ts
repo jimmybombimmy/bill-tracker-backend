@@ -5,6 +5,10 @@ export const error400 = ((res: express.Response, reason: string) => {
     res.status(400).send({
       message: 'Error 400 - Bad Request: User path must be a number'
     })
+  } else if (reason === 'txnInfoMissing') {
+    res.status(400).send({
+      message: 'Error 400 - Bad Request: Transaction info incomplete'
+    })    
   }
 })
 
@@ -17,7 +21,6 @@ export const error401 = ((res: express.Response, reason: string) => {
 })
 
 export const error404 = ((res: express.Response, reason: string) => {
-  console.log("am i here?")
   if (reason === 'pageNotFound') {
     res.status(404).send({
       message: 'Error 404: Page not found'

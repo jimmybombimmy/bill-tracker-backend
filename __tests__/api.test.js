@@ -272,7 +272,7 @@ describe("POST /api/login", () => {
   });
 });
 
-describe("200 /api/transactions/:user", () => {
+describe("GET /api/transactions/:user", () => {
   describe("Successful connection test(s)", () => {
     test("200: Receives all of users transactions when they are logged in", async () => {
       const userId = "655b5158c6965d869180e906";
@@ -307,21 +307,22 @@ describe("200 /api/transactions/:user", () => {
             ]);
             expect(txn).toHaveProperty("frequency", expect.any(String));
             expect(txn).toHaveProperty("created_at", expect.any(Number));
+            expect(txn).toHaveProperty("amount", expect.any(Number));
           });
         });
     });
   });
   describe("Unsuccessful connection test(s)", () => {
     test("401: User can not view transactions if not logged in", () => {
-      const userId = "655b5158c6965d869180e906"
+      const userId = "655b5158c6965d869180e906";
 
       return testSession
-      .get(`/api/transactions/${userId}`)
-      .expect(401)
-      .then(({ body }) => {
-         expect(body.message).toBe('Error 401: User Authorization invalid')
-      })
-    })
+        .get(`/api/transactions/${userId}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 401: User Authorization invalid");
+        });
+    });
     test("401: User can not view transactions of another user", async () => {
       const otherUserId = "655b50b42e2bcd090b435230";
 
@@ -344,15 +345,17 @@ describe("200 /api/transactions/:user", () => {
         .get(`/api/transactions/${otherUserId}`)
         .expect(401)
         .then(({ body }) => {
-          expect(body.message).toBe('Error 401: User is not authorized to view information')
-        })
-    })
+          expect(body.message).toBe(
+            "Error 401: User is not authorized to view information"
+          );
+        });
+    });
   });
 });
 
-describe("POST /api/transactions" , () => {
+describe("POST /api/transactions", () => {
   describe("Successful connection test(s)", () => {
-    test("201: User can post transactions with their user id", async () => {
+    test("201: User can post transactions with their user id when logged in", async () => {
       const userId = "655b50b42e2bcd090b435230";
 
       const userLogin1 = {
@@ -374,23 +377,69 @@ describe("POST /api/transactions" , () => {
         name: "Sensu Beans",
         type: "Direct Debit",
         frequency: "monthly",
-      }
+        amount: 10000
+      };
 
-      return testSession 
+      return testSession
         .post("/api/transactions")
         .send(transactionDetails)
         .expect(201)
-        .then(({body}) => {
-          expect(body.user_id).toBe(userId)
-          expect(body.name).toBe(transactionDetails.name)
-          expect(body.type).toBe(transactionDetails.type)
-          expect(body.frequency).toBe(transactionDetails.frequency)
-          expect(Date.now()).toBeGreaterThan(body.created_at)
-          expect(Date.now()).toBeLessThan(body.created_at + 10000)
-        })
-    })
-  })
+        .then(({ body }) => {
+          expect(body.user_id).toBe(userId);
+          expect(body.name).toBe(transactionDetails.name);
+          expect(body.type).toBe(transactionDetails.type);
+          expect(body.frequency).toBe(transactionDetails.frequency);
+          expect(Date.now()).toBeGreaterThan(body.created_at);
+          expect(Date.now()).toBeLessThan(body.created_at + 10000);
+          expect(body.amount).toBe(transactionDetails.amount)
+        });
+    });
+  });
   describe("Unsuccessful connection test(s)", () => {
-    //user needs to be authed first
-  })
-})
+    test("401: User can not view transactions if not logged in", () => {
+      const transactionDetails = {
+        name: "Sensu Beans",
+        type: "Direct Debit",
+        frequency: "monthly",
+        amount: 10000
+      };
+      return testSession
+        .post("/api/transactions")
+        .send(transactionDetails)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 401: User Authorization invalid")
+        });
+    });
+    test("400: User can not post transactions without necessary details", async () => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      const transactionDetails = {
+        name: undefined,
+        type: "Direct Debit",
+        frequency: undefined,
+        amount: 10000
+      };
+
+      return testSession
+        .post("/api/transactions")
+        .send(transactionDetails)
+        .expect(400)
+    })
+  });
+});

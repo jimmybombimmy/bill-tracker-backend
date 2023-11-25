@@ -1,7 +1,8 @@
 import express from 'express'
 import { getTransactionsByIdModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
-import { error401 } from '../errors.js'
+import { error400, error401 } from '../errors.js'
+import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
 
 
 
@@ -24,16 +25,30 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
     return error401(res, 'userNotAuthed')
   }
 
-  const txnInfo = {
+  const txnInfo: TransactionDataInterface = {
     user_id,
     name: txnDetails.name,
     type: txnDetails.type,
     frequency: txnDetails.frequency,
-    created_at
+    created_at,
+    amount: txnDetails.amount
   }
 
-  postTransactionModel(txnInfo)
+  const txnValidCheck = (txn: TransactionDataInterface): txn is TransactionDataInterface => {
+    if (txn.name) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  if (txnValidCheck(txnInfo) === false) {
+    return error400(res, 'txnInfoMissing')
+  } else {
+    postTransactionModel(txnInfo)
     .then((result: object) => {
       res.status(201).send(result)
     })
+  }
+
 })

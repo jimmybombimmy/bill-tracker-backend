@@ -1,6 +1,6 @@
 import { getTransactionsByIdModel, postTransactionModel } from '../models/transactions.model.js';
 import { sessionInfo } from '../../app.js';
-import { error401 } from '../errors.js';
+import { error400, error401 } from '../errors.js';
 export const getTransactionsById = ((req, res) => {
     const user_id = req.params.user_id;
     if (sessionInfo.passport.user !== user_id) {
@@ -23,10 +23,24 @@ export const postTransaction = ((req, res) => {
         name: txnDetails.name,
         type: txnDetails.type,
         frequency: txnDetails.frequency,
-        created_at
+        created_at,
+        amount: txnDetails.amount
     };
-    postTransactionModel(txnInfo)
-        .then((result) => {
-        res.status(201).send(result);
-    });
+    const txnValidCheck = (txn) => {
+        if (txn.name) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+    if (txnValidCheck(txnInfo) === false) {
+        return error400(res, 'txnInfoMissing');
+    }
+    else {
+        postTransactionModel(txnInfo)
+            .then((result) => {
+            res.status(201).send(result);
+        });
+    }
 });

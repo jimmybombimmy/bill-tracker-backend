@@ -1,4 +1,3 @@
-// transactions.js
 export const transactions = [
     // User 1 transactions
     {
@@ -7,6 +6,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "monthly",
         created_at: 1602828180000,
+        amount: 1200000,
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -14,6 +14,7 @@ export const transactions = [
         type: "Standing Order",
         frequency: "monthly",
         created_at: 1615148180000,
+        amount: 10000,
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -21,6 +22,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "monthly",
         created_at: 1627468180000,
+        amount: 80000,
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -28,6 +30,7 @@ export const transactions = [
         type: "Recurring Payment",
         frequency: "weekly",
         created_at: 1639788180000,
+        amount: 30000,
     },
     // User 2 transactions
     {
@@ -36,6 +39,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "monthly",
         created_at: 1609090180000,
+        amount: 100000,
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -43,6 +47,7 @@ export const transactions = [
         type: "Standing Order",
         frequency: "monthly",
         created_at: 1616770180000,
+        amount: 5000,
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -50,6 +55,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "quarterly",
         created_at: 1624340180000,
+        amount: 60000,
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -57,6 +63,7 @@ export const transactions = [
         type: "Recurring Payment",
         frequency: "monthly",
         created_at: 1632020180000,
+        amount: 15000,
     },
     // User 3 transactions
     {
@@ -65,6 +72,7 @@ export const transactions = [
         type: "Standing Order",
         frequency: "monthly",
         created_at: 1600912180000,
+        amount: 50000,
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -72,6 +80,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "monthly",
         created_at: 1613232180000,
+        amount: 200000,
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -79,6 +88,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "quarterly",
         created_at: 1625552180000,
+        amount: 150000,
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -86,6 +96,7 @@ export const transactions = [
         type: "Recurring Payment",
         frequency: "weekly",
         created_at: 1637872180000,
+        amount: 70000,
     },
     // User 4 transactions
     {
@@ -94,6 +105,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "monthly",
         created_at: 1605004180000,
+        amount: 1500000,
     },
     {
         user_id: "655b5292f8a18265e0b77848",
@@ -101,6 +113,7 @@ export const transactions = [
         type: "Direct Debit",
         frequency: "biannual",
         created_at: 1617324180000,
+        amount: 40000,
     },
     {
         user_id: "655b5292f8a18265e0b77848",
@@ -108,6 +121,6 @@ export const transactions = [
         type: "Standing Order",
         frequency: "monthly",
         created_at: 1629644180000,
+        amount: 30000,
     },
-    // User 5 does not have any transactions
 ];

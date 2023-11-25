@@ -22,7 +22,8 @@ const TransactionSchema = new mongoose.Schema({
     name: String,
     type: String,
     frequency: String,
-    created_at: Number
+    created_at: Number,
+    amount: Number
 });
 export const User = connection.model('User', UserSchema);
 export const Transaction = connection.model('Transaction', TransactionSchema);

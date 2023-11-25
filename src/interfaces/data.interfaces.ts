@@ -4,6 +4,7 @@ export interface TransactionDataInterface {
   type: string;
   frequency: string;
   created_at: number;
+  amount: number;
 }
 
 export interface UserDataInterface {
