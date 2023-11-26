@@ -16,6 +16,7 @@ router.post('/api/logout', logoutUser);
 // Transaction Routes
 router.get('/api/transactions/:user_id', isAuth, getTransactionsById);
 router.post('/api/transactions', isAuth, postTransaction);
+router.patch('/api/transactions/:txn_id', isAuth);
 // Page not found route
 router.get('/api/:anything', pageNotFound);
 export default router;

@@ -29,9 +29,10 @@ const TransactionSchema = new mongoose.Schema({
   user_id: String,
   name: String,
   type: String,
-  frequency: String,
+  frequency: {period: String, custom_days: Number},
   created_at: Number,
-  amount: Number
+  amount: Number,
+  history: Array
 })
 
 

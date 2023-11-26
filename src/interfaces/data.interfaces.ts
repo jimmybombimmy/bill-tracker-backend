@@ -2,9 +2,10 @@ export interface TransactionDataInterface {
   user_id: string;
   name: string;
   type: string;
-  frequency: string;
+  frequency: { period: string; custom_days: Number; }
   created_at: number;
   amount: number;
+  history: object[];
 }
 
 export interface UserDataInterface {

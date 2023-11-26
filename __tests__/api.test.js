@@ -305,7 +305,9 @@ describe("GET /api/transactions/:user", () => {
               "Standing Order",
               "Recurring Payment",
             ]);
-            expect(txn).toHaveProperty("frequency", expect.any(String));
+            expect(txn).toHaveProperty("frequency", expect.any(Object));
+            expect(txn.frequency).toHaveProperty("period", expect.any(String))
+            expect(txn.frequency).toHaveProperty("custom_days", expect.any(Number))
             expect(txn).toHaveProperty("created_at", expect.any(Number));
             expect(txn).toHaveProperty("amount", expect.any(Number));
           });
@@ -376,7 +378,10 @@ describe("POST /api/transactions", () => {
       const transactionDetails = {
         name: "Sensu Beans",
         type: "Direct Debit",
-        frequency: "monthly",
+        frequency: {
+          period: "monthly",
+          custom_days: 0
+        },
         amount: 10000
       };
 
@@ -385,10 +390,12 @@ describe("POST /api/transactions", () => {
         .send(transactionDetails)
         .expect(201)
         .then(({ body }) => {
+          console.log(body)
           expect(body.user_id).toBe(userId);
           expect(body.name).toBe(transactionDetails.name);
           expect(body.type).toBe(transactionDetails.type);
-          expect(body.frequency).toBe(transactionDetails.frequency);
+          expect(body.frequency.period).toBe(transactionDetails.frequency.period);
+          expect(body.frequency.custom_days).toBe(transactionDetails.frequency.custom_days);
           expect(Date.now()).toBeGreaterThan(body.created_at);
           expect(Date.now()).toBeLessThan(body.created_at + 10000);
           expect(body.amount).toBe(transactionDetails.amount)
@@ -443,3 +450,56 @@ describe("POST /api/transactions", () => {
     })
   });
 });
+
+describe("PATCH /api/transactions/:txn_id" , () => {
+  describe("Successful connection test(s)", () => {
+    test("201: Changes details of one of a transaction if one aspect of it has changed", async() => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      //Get transactions (so id can be used for a test)
+      let txnId;
+
+      await testSession
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          txnId = body[0]._id
+        })
+      
+      //Patch transaction
+      const changedParam = {
+        _id: txnId,
+        name: "Monthly Ramen Shipment"
+      }
+
+      return testSession
+        .patch(`/api/transaction/${txnId}`)
+        .send(changedParam)
+        .expect(200)
+        .then(({body}) => {
+          console.log(body)
+        })
+
+      
+    })
+  })
+  describe("Unsuccessful connection test(s)", () => {
+
+  })
+})

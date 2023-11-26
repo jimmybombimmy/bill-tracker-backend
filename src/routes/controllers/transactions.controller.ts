@@ -31,7 +31,8 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
     type: txnDetails.type,
     frequency: txnDetails.frequency,
     created_at,
-    amount: txnDetails.amount
+    amount: txnDetails.amount,
+    history: []
   }
 
   const txnValidCheck = (txn: TransactionDataInterface): txn is TransactionDataInterface => {
@@ -50,5 +51,8 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
       res.status(201).send(result)
     })
   }
+})
+
+export const patchTransaction = ((req: express.Request, res: express.Response) => {
 
 })

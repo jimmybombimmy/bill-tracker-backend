@@ -24,7 +24,8 @@ export const postTransaction = ((req, res) => {
         type: txnDetails.type,
         frequency: txnDetails.frequency,
         created_at,
-        amount: txnDetails.amount
+        amount: txnDetails.amount,
+        history: []
     };
     const txnValidCheck = (txn) => {
         if (txn.name) {
@@ -43,4 +44,6 @@ export const postTransaction = ((req, res) => {
             res.status(201).send(result);
         });
     }
+});
+export const patchTransaction = ((req, res) => {
 });
