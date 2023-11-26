@@ -17,8 +17,8 @@ export const transactions = [
         name: "Netflix Subscription",
         type: "Standing Order",
         frequency: {
-            period: "monthly",
-            custom_days: 0,
+            period: "custom",
+            custom_days: 50,
         },
         created_at: 1615148180000,
         amount: 10000,
@@ -112,8 +112,8 @@ export const transactions = [
         name: "Magazine Subscription",
         type: "Recurring Payment",
         frequency: {
-            period: "monthly",
-            custom_days: 0,
+            period: "custom",
+            custom_days: 18,
         },
         created_at: 1632020180000,
         amount: 15000,
@@ -198,8 +198,8 @@ export const transactions = [
         name: "Video Streaming Service",
         type: "Standing Order",
         frequency: {
-            period: "monthly",
-            custom_days: 0,
+            period: "custom",
+            custom_days: 80,
         },
         created_at: 1629644180000,
         amount: 30000,
