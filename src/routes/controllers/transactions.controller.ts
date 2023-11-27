@@ -1,5 +1,5 @@
 import express from 'express'
-import { getTransactionsByIdModel, postTransactionModel } from '../models/transactions.model.js'
+import { getTransactionsByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
 import { error400, error401 } from '../errors.js'
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
@@ -54,5 +54,13 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
 })
 
 export const patchTransaction = ((req: express.Request, res: express.Response) => {
-
+  const oldTxnInfo = req.body.txnInfo
+  const txnId = req.params.txn_id
+  const newAmount = req.body.changedParam.amount
+  const userId = sessionInfo.passport.user
+  console.log(req.body)
+  patchTransactionModel(oldTxnInfo, userId, txnId, newAmount)
+    .then(result => {
+      res.status(200).send(result)
+    })
 })

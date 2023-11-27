@@ -11,3 +11,16 @@ export const postTransactionModel = (transaction) => {
         return result;
     });
 };
+export const patchTransactionModel = async (oldTxnInfo, userId, txnId, newAmount) => {
+    oldTxnInfo.history.unshift({ amount: oldTxnInfo.amount, created_at: oldTxnInfo.created_at });
+    const newHistoryInfo = oldTxnInfo.history;
+    const updatedInfo = {
+        amount: newAmount,
+        created_at: Date.now(),
+        history: newHistoryInfo
+    };
+    return Transaction.updateOne({ user_id: userId, _id: txnId }, updatedInfo)
+        .then((result) => {
+        return result;
+    });
+};

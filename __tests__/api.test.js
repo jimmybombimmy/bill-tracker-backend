@@ -390,7 +390,6 @@ describe("POST /api/transactions", () => {
         .send(transactionDetails)
         .expect(201)
         .then(({ body }) => {
-          console.log(body)
           expect(body.user_id).toBe(userId);
           expect(body.name).toBe(transactionDetails.name);
           expect(body.type).toBe(transactionDetails.type);
@@ -453,7 +452,7 @@ describe("POST /api/transactions", () => {
 
 describe("PATCH /api/transactions/:txn_id" , () => {
   describe("Successful connection test(s)", () => {
-    test("201: Changes details of one of a transaction if one aspect of it has changed", async() => {
+    test("201: Changing a transactions amount will reflect when loading the transaction again", async() => {
       const userId = "655b50b42e2bcd090b435230";
 
       //Login user
@@ -473,33 +472,171 @@ describe("PATCH /api/transactions/:txn_id" , () => {
       await testSession.get(redirectedUrl).expect(201);
 
       //Get transactions (so id can be used for a test)
-      let txnId;
-
+      let txnInfo;
+      
       await testSession
         .get(`/api/transactions/${userId}`)
         .expect(200)
         .then(({ body }) => {
-          txnId = body[0]._id
+          txnInfo = body[0]
         })
-      
+
+
       //Patch transaction
       const changedParam = {
-        _id: txnId,
-        name: "Monthly Ramen Shipment"
+        _id: txnInfo._id,
+        amount: 135000
       }
 
-      return testSession
-        .patch(`/api/transaction/${txnId}`)
-        .send(changedParam)
+      const expectedResult = {
+        acknowledged: true,
+        modifiedCount: 1,
+        upsertedId: null,
+        upsertedCount: 0,
+        matchedCount: 1
+      }
+
+      await testSession
+        .patch(`/api/transactions/${txnInfo._id}`)
+        .send({txnInfo, changedParam})
         .expect(200)
         .then(({body}) => {
-          console.log(body)
+          expect(body).toEqual(expectedResult)
         })
 
+      //check that transaction has changed
+      return testSession
+      .get(`/api/transactions/${userId}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0].amount).toBe(135000)
+      })
+    });
+    test("201: Changing a transaction will update created_at to the current time", async() => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      //Get transactions (so id can be used for a test)
+      let txnInfo;
       
+      await testSession
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          txnInfo = body[0]
+        })
+
+        //Patch transaction
+        const changedParam = {
+          _id: txnInfo._id,
+          amount: 135000
+        }
+
+  
+        const expectedResult = {
+          acknowledged: true,
+          modifiedCount: 1,
+          upsertedId: null,
+          upsertedCount: 0,
+          matchedCount: 1
+        }
+  
+
+      await testSession
+        .patch(`/api/transactions/${txnInfo._id}`)
+        .send({txnInfo, changedParam})
+        .expect(200)
+        .then(({body}) => {
+          expect(body).toEqual(expectedResult)
+        })
+
+      //check that transaction has changed
+      return testSession
+      .get(`/api/transactions/${userId}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0].created_at).toBeGreaterThan(txnInfo.created_at)
+      })
+    });
+    test("201: details of previous transaction amount should be placed in history folder with the created_at time", async() => {
+      const userId = "655b5158c6965d869180e906";
+
+      //Login user
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      //Get transactions (so id can be used for a test)
+      let txnInfo;
+      
+      await testSession
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          txnInfo = body[0]
+        })
+
+        //Patch transaction
+        const changedParam = {
+          _id: txnInfo._id,
+          amount: 135000
+        }
+  
+        const expectedResult = {
+          acknowledged: true,
+          modifiedCount: 1,
+          upsertedId: null,
+          upsertedCount: 0,
+          matchedCount: 1
+        }
+  
+      await testSession
+        .patch(`/api/transactions/${txnInfo._id}`)
+        .send({txnInfo, changedParam})
+        .expect(200)
+        .then(({body}) => {
+          expect(body).toEqual(expectedResult)
+      })
+
+      //check that transaction has changed
+      return testSession
+      .get(`/api/transactions/${userId}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0].history[0].created_at).toBe(1609090180000)
+        expect(body[0].created_at).toBeGreaterThan(body[0].history[0].created_at)
+        expect(Date.now()).toBeGreaterThan(body[0].created_at);
+        expect(Date.now()).toBeLessThan(body[0].created_at + 10000);
+      })
     })
   })
   describe("Unsuccessful connection test(s)", () => {
-
+    //it won't work if user_id of user logged in doesn't match
   })
 })

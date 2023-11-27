@@ -11,7 +11,7 @@ export const transactions: TransactionDataInterface[] = [
       custom_days: 0,
     },
     created_at: 1602828180000,
-    amount: 1200000,
+    amount: 120000,
     history: [],
   },
   {

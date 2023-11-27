@@ -1,4 +1,4 @@
-import { getTransactionsByIdModel, postTransactionModel } from '../models/transactions.model.js';
+import { getTransactionsByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
 import { sessionInfo } from '../../app.js';
 import { error400, error401 } from '../errors.js';
 export const getTransactionsById = ((req, res) => {
@@ -46,4 +46,13 @@ export const postTransaction = ((req, res) => {
     }
 });
 export const patchTransaction = ((req, res) => {
+    const oldTxnInfo = req.body.txnInfo;
+    const txnId = req.params.txn_id;
+    const newAmount = req.body.changedParam.amount;
+    const userId = sessionInfo.passport.user;
+    console.log(req.body);
+    patchTransactionModel(oldTxnInfo, userId, txnId, newAmount)
+        .then(result => {
+        res.status(200).send(result);
+    });
 });
