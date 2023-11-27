@@ -50,9 +50,16 @@ export const patchTransaction = ((req, res) => {
     const txnId = req.params.txn_id;
     const newAmount = req.body.changedParam.amount;
     const userId = sessionInfo.passport.user;
-    console.log(req.body);
-    patchTransactionModel(oldTxnInfo, userId, txnId, newAmount)
-        .then(result => {
-        res.status(200).send(result);
-    });
+    if (!newAmount) {
+        return error400(res, 'txnInfoMissing');
+    }
+    else if (!parseInt(newAmount)) {
+        return error400(res, 'txnInfoIncorrect');
+    }
+    else {
+        patchTransactionModel(oldTxnInfo, userId, txnId, newAmount)
+            .then(result => {
+            res.status(200).send(result);
+        });
+    }
 });

@@ -9,6 +9,11 @@ export const error400 = ((res, reason) => {
             message: 'Error 400 - Bad Request: Transaction info incomplete'
         });
     }
+    else if (reason === 'txnInfoIncorrect') {
+        res.status(400).send({
+            message: 'Error 400 - Bad Request: Transaction info should be a number'
+        });
+    }
 });
 export const error401 = ((res, reason) => {
     if (reason === 'userNotMatched') {

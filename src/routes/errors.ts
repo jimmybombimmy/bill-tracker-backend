@@ -9,6 +9,10 @@ export const error400 = ((res: express.Response, reason: string) => {
     res.status(400).send({
       message: 'Error 400 - Bad Request: Transaction info incomplete'
     })    
+  } else if (reason === 'txnInfoIncorrect') { 
+    res.status(400).send({
+      message: 'Error 400 - Bad Request: Transaction info should be a number'
+    })    
   }
 })
 
