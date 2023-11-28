@@ -837,3 +837,55 @@ describe("PATCH /api/transactions/:txn_id", () => {
   });
 });
 
+describe("DELETE /api/transactions/:txn_id" , () => {
+  describe("Successful connection test(s)", () => {
+    test.only("204: Transaction has successfully been deleted", async() => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      //Get transactions (so id can be used for a test)
+      let txnInfoToDelete;
+
+      await testSession
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          txnInfoToDelete = body[0];
+        });
+
+      //delete transaction
+      await testSession
+        .delete(`/api/transactions/${txnInfoToDelete._id}`)
+        .expect(204)
+
+      //check transactions array to make sure it doesn't exist anymore
+      await testSession
+      .get(`/api/transactions/${userId}`)
+      .expect(200)
+      .then(({ body }) => {
+        body.map(txn => {
+          expect(txn._id).not.toBe(txnInfoToDelete._id)
+        })
+      });
+    })
+    test("200: Deleted transaction has been moved to the Cancelled_Transaction db with a cancelled time", () => {
+    })
+  })
+  describe("Unsuccessful connection test(s)", () => {
+  })
+})

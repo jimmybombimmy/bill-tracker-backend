@@ -5,7 +5,7 @@ import { isAuth } from "./authMiddleware.js";
 import { getAllUsers, getUserById } from "./controllers/users.controller.js";
 import { pageNotFound } from "./errors.js";
 import { loginSuccess, loginUser, logoutUser, registerUser } from "./controllers/auth.controller.js";
-import { getTransactionsById, getTransactionsHistoryById, patchTransaction, postTransaction } from "./controllers/transactions.controller.js";
+import { getTransactionsById, getTransactionsHistoryById, patchTransaction, postTransaction, deleteTransaction } from "./controllers/transactions.controller.js";
 
 
 
@@ -33,6 +33,8 @@ router.get('/api/transactions/history/:user_id', isAuth, getTransactionsHistoryB
 router.post('/api/transactions', isAuth, postTransaction)
 
 router.patch('/api/transactions/:txn_id', isAuth, patchTransaction)
+
+router.delete('/api/transactions/:txn_id', isAuth, deleteTransaction)
 
 // Page not found route
 router.get('/api/:anything', pageNotFound)

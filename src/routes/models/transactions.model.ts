@@ -42,3 +42,12 @@ export const patchTransactionModel = async (oldTxnInfo: TransactionDataInterface
     return result
   })
 }
+
+export const deleteTransactionModel = (txnId: string) => {
+  
+  return Transaction.deleteOne({_id: txnId})
+    .then(result => {
+      console.log(result)
+      return result
+    })
+}

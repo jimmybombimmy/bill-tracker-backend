@@ -30,3 +30,10 @@ export const patchTransactionModel = async (oldTxnInfo, userId, txnId, newAmount
         return result;
     });
 };
+export const deleteTransactionModel = (txnId) => {
+    return Transaction.deleteOne({ _id: txnId })
+        .then(result => {
+        console.log(result);
+        return result;
+    });
+};

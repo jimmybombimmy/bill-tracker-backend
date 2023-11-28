@@ -1,5 +1,5 @@
 import express from 'express'
-import { getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
+import { deleteTransactionModel, getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
 import { error400, error401 } from '../errors.js'
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
@@ -80,4 +80,12 @@ export const patchTransaction = ((req: express.Request, res: express.Response) =
       res.status(200).send(result)
     })
   }
+})
+
+export const deleteTransaction = ((req: express.Request, res: express.Response) => {
+  const txnIdString = req.params.txn_id
+  return deleteTransactionModel(txnIdString)
+    .then((result) => {
+      res.status(204).send()
+    })
 })

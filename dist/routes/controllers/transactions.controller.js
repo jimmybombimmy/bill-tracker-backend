@@ -1,4 +1,4 @@
-import { getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
+import { deleteTransactionModel, getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
 import { sessionInfo } from '../../app.js';
 import { error400, error401 } from '../errors.js';
 export const getTransactionsById = ((req, res) => {
@@ -72,4 +72,11 @@ export const patchTransaction = ((req, res) => {
             res.status(200).send(result);
         });
     }
+});
+export const deleteTransaction = ((req, res) => {
+    const txnIdString = req.params.txn_id;
+    return deleteTransactionModel(txnIdString)
+        .then((result) => {
+        res.status(204).send();
+    });
 });
