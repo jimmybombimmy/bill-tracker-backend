@@ -1,5 +1,5 @@
 import express from 'express'
-import { getTransactionsByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
+import { getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
 import { error400, error401 } from '../errors.js'
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
@@ -12,6 +12,17 @@ export const getTransactionsById = ((req: express.Request, res: express.Response
     return error401(res, 'userNotAuthed')
   }
   getTransactionsByIdModel(user_id)
+    .then((result) => {
+      res.status(200).send(result)
+    })
+})
+
+export const getTransactionsHistoryById = ((req: express.Request, res: express.Response) => {
+  const user_id = req.params.user_id
+  if (sessionInfo.passport.user !== user_id) {
+    return error401(res, 'userNotAuthed')
+  }
+  getTransactionsHistoryByIdModel(user_id)
     .then((result) => {
       res.status(200).send(result)
     })

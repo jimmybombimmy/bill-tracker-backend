@@ -1,6 +1,12 @@
-import { Transaction } from '../../config/database.js';
+import { Transaction, Cancelled_Transaction } from '../../config/database.js';
 export const getTransactionsByIdModel = (user_id) => {
     return Transaction.find({ user_id: user_id })
+        .then(txns => {
+        return txns;
+    });
+};
+export const getTransactionsHistoryByIdModel = (user_id) => {
+    return Cancelled_Transaction.find({ user_id: user_id })
         .then(txns => {
         return txns;
     });

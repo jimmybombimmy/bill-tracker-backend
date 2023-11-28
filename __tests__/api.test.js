@@ -358,6 +358,93 @@ describe("GET /api/transactions/:user", () => {
   });
 });
 
+describe("GET /api/transactions/history/:user", () => {
+  describe("Successful connection test(s)", () => {
+    test("200: Receives all of users deleted transactions when they are logged in", async () => {
+      const userId = "655b5158c6965d869180e906";
+
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      return testSession
+        .get(`/api/transactions/history/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          body.forEach((txn) => {
+            expect(txn.user_id).toBe(userId);
+            expect(txn).toHaveProperty("_id", expect.any(String));
+            expect(txn).toHaveProperty("name", expect.any(String));
+            expect(txn.type).toBeOneOf([
+              "Direct Debit",
+              "Standing Order",
+              "Recurring Payment",
+            ]);
+            expect(txn).toHaveProperty("frequency", expect.any(Object));
+            expect(txn.frequency).toHaveProperty("period", expect.any(String));
+            expect(txn.frequency).toHaveProperty(
+              "custom_days",
+              expect.any(Number)
+            );
+            expect(txn).toHaveProperty("created_at", expect.any(Number));
+            expect(txn).toHaveProperty("amount", expect.any(Number));
+            expect(txn).toHaveProperty("cancelled", expect.any(Number))
+          });
+        });
+    });
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    test("401: User can not view deleted transactions if not logged in", () => {
+      const userId = "655b5158c6965d869180e906";
+
+      return testSession
+        .get(`/api/transactions/history/${userId}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 401: User Authorization invalid");
+        });
+    });
+    test("401: User can not view deleted transactions of another user", async () => {
+      const otherUserId = "655b50b42e2bcd090b435230";
+
+      const userLogin1 = {
+        username: "Vegeta123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      return testSession
+        .get(`/api/transactions/history${otherUserId}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Error 401: User is not authorized to view information"
+          );
+        });
+    });
+  });
+});
+
 describe("POST /api/transactions", () => {
   describe("Successful connection test(s)", () => {
     test("201: User can post transactions with their user id when logged in", async () => {
@@ -749,3 +836,4 @@ describe("PATCH /api/transactions/:txn_id", () => {
     });
   });
 });
+

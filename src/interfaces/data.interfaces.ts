@@ -1,3 +1,5 @@
+
+
 export interface TransactionDataInterface {
   user_id: string;
   name: string;
@@ -16,4 +18,15 @@ export interface UserDataInterface {
   salt: string;
   admin: boolean;
   __v: number;
+}
+
+export interface CancelledTransactionDataInterface {
+  user_id: string;
+  name: string;
+  type: string;
+  frequency: { period: string; custom_days: Number; }
+  created_at: number;
+  amount: number;
+  history: object[];
+  cancelled: number;
 }
