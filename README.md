@@ -7,6 +7,7 @@
   <li><strong>Framework:</strong> Express.js</li>
   <li><strong>Authentication:</strong> Passport.js, Passport-Local</li>
   <li><strong>Testing:</strong> Jest, Supertest, Supertest-Session</li>
+  <li><strong>Database:</strong> MongoDB</li>
 </ul>
 
 <h1>Live-version:</h1>
