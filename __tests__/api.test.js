@@ -839,7 +839,7 @@ describe("PATCH /api/transactions/:txn_id", () => {
 
 describe("DELETE /api/transactions/:txn_id" , () => {
   describe("Successful connection test(s)", () => {
-    test.only("204: Transaction has successfully been deleted", async() => {
+    test("204: Transaction has successfully been deleted", async() => {
       const userId = "655b50b42e2bcd090b435230";
 
       //Login user
