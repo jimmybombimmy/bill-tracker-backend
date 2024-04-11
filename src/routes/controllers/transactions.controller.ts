@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteTransactionModel, getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
+import { deleteTransactionModel, getTransactionsByIdModel, getSoleTransactionByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
 import { error400, error401 } from '../errors.js'
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
@@ -12,6 +12,15 @@ export const getTransactionsById = ((req: express.Request, res: express.Response
     return error401(res, 'userNotAuthed')
   }
   getTransactionsByIdModel(user_id)
+    .then((result) => {
+      res.status(200).send(result)
+    })
+})
+
+export const getSoleTransactionById = ((req: express.Request, res: express.Response) => {
+  const {user_id, txn_id} = req.params
+
+  getSoleTransactionByIdModel(txn_id)
     .then((result) => {
       res.status(200).send(result)
     })

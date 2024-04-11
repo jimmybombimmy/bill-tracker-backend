@@ -5,6 +5,12 @@ export const getTransactionsByIdModel = (user_id) => {
         return txns;
     });
 };
+export const getSoleTransactionByIdModel = (txn_id) => {
+    return Transaction.findById(txn_id)
+        .then(txn => {
+        return txn;
+    });
+};
 export const getTransactionsHistoryByIdModel = (user_id) => {
     return Cancelled_Transaction.find({ user_id: user_id })
         .then(txns => {

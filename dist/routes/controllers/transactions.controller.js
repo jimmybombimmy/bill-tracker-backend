@@ -1,4 +1,4 @@
-import { deleteTransactionModel, getTransactionsByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
+import { deleteTransactionModel, getTransactionsByIdModel, getSoleTransactionByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
 import { sessionInfo } from '../../app.js';
 import { error400, error401 } from '../errors.js';
 export const getTransactionsById = ((req, res) => {
@@ -7,6 +7,13 @@ export const getTransactionsById = ((req, res) => {
         return error401(res, 'userNotAuthed');
     }
     getTransactionsByIdModel(user_id)
+        .then((result) => {
+        res.status(200).send(result);
+    });
+});
+export const getSoleTransactionById = ((req, res) => {
+    const { user_id, txn_id } = req.params;
+    getSoleTransactionByIdModel(txn_id)
         .then((result) => {
         res.status(200).send(result);
     });

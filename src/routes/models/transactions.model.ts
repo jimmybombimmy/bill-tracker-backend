@@ -1,33 +1,40 @@
-import {Transaction, Cancelled_Transaction} from '../../config/database.js'
+import { Transaction, Cancelled_Transaction } from '../../config/database.js'
 
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
 
 export const getTransactionsByIdModel = (user_id: string) => {
-  
-  return Transaction.find({user_id: user_id})
+
+  return Transaction.find({ user_id: user_id })
     .then(txns => {
       return txns
     })
-} 
+}
+
+export const getSoleTransactionByIdModel = (txn_id: string) => {
+  return Transaction.findById(txn_id)
+    .then(txn => {
+      return txn
+    })
+}
 
 export const getTransactionsHistoryByIdModel = (user_id: string) => {
-  
-  return Cancelled_Transaction.find({user_id: user_id})
+
+  return Cancelled_Transaction.find({ user_id: user_id })
     .then(txns => {
       return txns
     })
-} 
+}
 
 export const postTransactionModel = (transaction: TransactionDataInterface) => {
   return Transaction.create(transaction)
     .then(result => {
       return result
-    }) 
+    })
 }
 
 export const patchTransactionModel = async (oldTxnInfo: TransactionDataInterface, userId: string, txnId: string, newAmount: object) => {
 
-  oldTxnInfo.history.unshift({amount: oldTxnInfo.amount, created_at: oldTxnInfo.created_at})
+  oldTxnInfo.history.unshift({ amount: oldTxnInfo.amount, created_at: oldTxnInfo.created_at })
 
   const newHistoryInfo = oldTxnInfo.history
 
@@ -36,18 +43,18 @@ export const patchTransactionModel = async (oldTxnInfo: TransactionDataInterface
     created_at: Date.now(),
     history: newHistoryInfo
   }
-  
-  return Transaction.updateOne({user_id: userId, _id: txnId}, updatedInfo)
-  .then((result) => {
-    return result
-  })
+
+  return Transaction.updateOne({ user_id: userId, _id: txnId }, updatedInfo)
+    .then((result) => {
+      return result
+    })
 }
 
 export const deleteTransactionModel = async (txnId: string, user_id: string) => {
 
   // add ability to move transaction to cancelled transactions folder
-  
-  return Transaction.deleteOne({_id: txnId})
+
+  return Transaction.deleteOne({ _id: txnId })
     .then(result => {
       return result
     })
