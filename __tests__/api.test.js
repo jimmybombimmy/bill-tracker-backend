@@ -296,6 +296,7 @@ describe("GET /api/transactions/:user", () => {
         .get(`/api/transactions/${userId}`)
         .expect(200)
         .then(({ body }) => {
+          // console.log(body)
           body.forEach((txn) => {
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
@@ -359,10 +360,12 @@ describe("GET /api/transactions/:user", () => {
 });
 
 describe("GET /api/transactions/:user_id/:txn_id", () => {
-  describe("Successful connection test(s)", () => {
-    test.only("200: Receives transaction matching info for txn_id", async () => {
-      const userId = "655b5158c6965d869180e906";
+  const userId = "655b5158c6965d869180e906";
 
+  let testTxn;
+
+  describe("Successful connection test(s)", () => {
+    test("200: Receives transaction matching info for txn_id", async () => {
       const userLogin1 = {
         username: "Vegeta123",
         password: "test",
@@ -378,31 +381,65 @@ describe("GET /api/transactions/:user_id/:txn_id", () => {
 
       await testSession.get(redirectedUrl).expect(201);
 
-      let testTxn;
-
-      await testSession 
+      await testSession
         .get(`/api/transactions/${userId}`)
         .expect(200)
         .then(({ body }) => {
-          testTxn = body[0]
-        })
+          testTxn = body[0];
+        });
 
       return testSession
         .get(`/api/transactions/${userId}/${testTxn._id}`)
         .expect(200)
-        .then(({body}) => {
-          expect(body).toEqual(testTxn)
-        })
+        .then(({ body }) => {
+          expect(body).toEqual(testTxn);
+        });
     });
-  }),
-    describe("Unsuccessful connection test(s)", () => {
-      //test that user is logged in before receiving info
-      //test that transaction id is valid
-      //test that transaction id is for the correct user
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    test("401: User can not view transaction if not logged in", () => {
+      //this test needs to be done with successful test to get valid transaction id
+
+      return testSession
+        .get(`/api/transactions/${userId}/${testTxn._id}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 401: User Authorization invalid");
+        });
     });
+    test("401: User can not view transaction if transaction is not theirs to view", async () => {
+      //this test needs to be done with successful test to get valid transaction id
+
+      const userId2 = "655b50b42e2bcd090b435230";
+
+      const userLogin2 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin2)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      return testSession
+        .get(`/api/transactions/${userId2}/${testTxn._id}`)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Error 401: User is not authorized to view information"
+          );
+        });
+    });
+  });
 });
 
-describe("GET /api/transactions/history/:user", () => {
+describe("GET /api/transactions/history/:user_id", () => {
   describe("Successful connection test(s)", () => {
     test("200: Receives all of users deleted transactions when they are logged in", async () => {
       const userId = "655b5158c6965d869180e906";
@@ -426,8 +463,8 @@ describe("GET /api/transactions/history/:user", () => {
         .get(`/api/transactions/history/${userId}`)
         .expect(200)
         .then(({ body }) => {
+          console.log(body);
           body.forEach((txn) => {
-            console.log("hgajdhvsahjdb", txn);
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
             expect(txn).toHaveProperty("name", expect.any(String));

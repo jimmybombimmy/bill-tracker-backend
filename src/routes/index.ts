@@ -11,6 +11,8 @@ import { getTransactionsById, getSoleTransactionById, getTransactionsHistoryById
 
 const router = Router()
 
+
+
 // User Routes
 router.get('/api/users', getAllUsers)
 
@@ -28,9 +30,9 @@ router.post('/api/logout', logoutUser);
 // Transaction Routes
 router.get('/api/transactions/:user_id', isAuth, getTransactionsById)
 
-router.get('/api/transactions/:user_id/:txn_id', isAuth, getSoleTransactionById)
-
 router.get('/api/transactions/history/:user_id', isAuth, getTransactionsHistoryById)
+
+router.get('/api/transactions/:user_id/:txn_id', isAuth, getSoleTransactionById)
 
 router.post('/api/transactions', isAuth, postTransaction)
 

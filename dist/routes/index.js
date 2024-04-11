@@ -15,8 +15,8 @@ router.get('/api/login-success', loginSuccess);
 router.post('/api/logout', logoutUser);
 // Transaction Routes
 router.get('/api/transactions/:user_id', isAuth, getTransactionsById);
-router.get('/api/transactions/:user_id/:txn_id', isAuth, getSoleTransactionById);
 router.get('/api/transactions/history/:user_id', isAuth, getTransactionsHistoryById);
+router.get('/api/transactions/:user_id/:txn_id', isAuth, getSoleTransactionById);
 router.post('/api/transactions', isAuth, postTransaction);
 router.patch('/api/transactions/:txn_id', isAuth, patchTransaction);
 router.delete('/api/transactions/:txn_id', isAuth, deleteTransaction);

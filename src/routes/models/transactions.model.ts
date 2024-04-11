@@ -10,9 +10,12 @@ export const getTransactionsByIdModel = (user_id: string) => {
     })
 }
 
-export const getSoleTransactionByIdModel = (txn_id: string) => {
+export const getSoleTransactionByIdModel = (user_id: string, txn_id: string) => {
   return Transaction.findById(txn_id)
     .then(txn => {
+      if (txn === null) {
+        return null
+      }
       return txn
     })
 }

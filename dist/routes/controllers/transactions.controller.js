@@ -13,8 +13,11 @@ export const getTransactionsById = ((req, res) => {
 });
 export const getSoleTransactionById = ((req, res) => {
     const { user_id, txn_id } = req.params;
-    getSoleTransactionByIdModel(txn_id)
+    getSoleTransactionByIdModel(user_id, txn_id)
         .then((result) => {
+        if (!result) {
+            return error401(res, 'userNotAuthed');
+        }
         res.status(200).send(result);
     });
 });

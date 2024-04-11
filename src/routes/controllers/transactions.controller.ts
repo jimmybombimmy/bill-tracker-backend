@@ -18,16 +18,20 @@ export const getTransactionsById = ((req: express.Request, res: express.Response
 })
 
 export const getSoleTransactionById = ((req: express.Request, res: express.Response) => {
-  const {user_id, txn_id} = req.params
+  const { user_id, txn_id } = req.params
 
-  getSoleTransactionByIdModel(txn_id)
+  getSoleTransactionByIdModel(user_id, txn_id)
     .then((result) => {
+      if (!result) {
+        return error401(res, 'userNotAuthed')
+      }
       res.status(200).send(result)
     })
 })
 
 export const getTransactionsHistoryById = ((req: express.Request, res: express.Response) => {
   const user_id = req.params.user_id
+
   if (sessionInfo.passport.user !== user_id) {
     return error401(res, 'userNotAuthed')
   }
@@ -67,9 +71,9 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
     return error400(res, 'txnInfoMissing')
   } else {
     postTransactionModel(txnInfo)
-    .then((result: object) => {
-      res.status(201).send(result)
-    })
+      .then((result: object) => {
+        res.status(201).send(result)
+      })
   }
 })
 
@@ -85,9 +89,9 @@ export const patchTransaction = ((req: express.Request, res: express.Response) =
     return error400(res, 'txnInfoIncorrect')
   } else {
     patchTransactionModel(oldTxnInfo, userId, txnId, newAmount)
-    .then(result => {
-      res.status(200).send(result)
-    })
+      .then(result => {
+        res.status(200).send(result)
+      })
   }
 })
 

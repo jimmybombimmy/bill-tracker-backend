@@ -5,9 +5,12 @@ export const getTransactionsByIdModel = (user_id) => {
         return txns;
     });
 };
-export const getSoleTransactionByIdModel = (txn_id) => {
+export const getSoleTransactionByIdModel = (user_id, txn_id) => {
     return Transaction.findById(txn_id)
         .then(txn => {
+        if (txn === null) {
+            return null;
+        }
         return txn;
     });
 };
