@@ -46,7 +46,7 @@ export const postTransaction = ((req: express.Request, res: express.Response) =>
     history: []
   }
 
-  const txnValidCheck = (txn: TransactionDataInterface): txn is TransactionDataInterface => {
+  const txnValidCheck = (txn: TransactionDataInterface) => {
     if (txn.name) {
       return true
     } else {

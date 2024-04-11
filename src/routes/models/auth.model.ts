@@ -1,6 +1,5 @@
 import express from 'express'
-import { connection } from '../../config/database.js'
-const User = connection.models.User
+import { User, connection } from '../../config/database.js'
 
 export const registerUserModel = (async (newUser: any, res: express.Response) => {
 
