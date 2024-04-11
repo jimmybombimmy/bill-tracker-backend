@@ -383,6 +383,7 @@ describe("GET /api/transactions/history/:user", () => {
         .expect(200)
         .then(({ body }) => {
           body.forEach((txn) => {
+            console.log("hgajdhvsahjdb", txn)
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
             expect(txn).toHaveProperty("name", expect.any(String));
@@ -399,7 +400,7 @@ describe("GET /api/transactions/history/:user", () => {
             );
             expect(txn).toHaveProperty("created_at", expect.any(Number));
             expect(txn).toHaveProperty("amount", expect.any(Number));
-            expect(txn).toHaveProperty("cancelled", expect.any(Number))
+            expect(txn).toHaveProperty("cancelled_at", expect.any(Number))
           });
         });
     });
@@ -839,9 +840,10 @@ describe("PATCH /api/transactions/:txn_id", () => {
 
 describe("DELETE /api/transactions/:txn_id" , () => {
   describe("Successful connection test(s)", () => {
-    test("204: Transaction has successfully been deleted", async() => {
+    test("204: Transaction has successfully been deleted", async () => {
       const userId = "655b50b42e2bcd090b435230";
 
+      console.log(testSession)
       //Login user
       const userLogin1 = {
         username: "Goku123",
@@ -883,7 +885,47 @@ describe("DELETE /api/transactions/:txn_id" , () => {
         })
       });
     })
-    test("200: Deleted transaction has been moved to the Cancelled_Transaction db with a cancelled time", () => {
+    test.skip("200: Deleted transaction has been moved to the Cancelled_Transaction db with a cancelled time", async () => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession.get(redirectedUrl).expect(201);
+
+      //Get transactions (so id can be used for a test)
+      let txnInfoToDelete;
+
+      await testSession
+        .get(`/api/transactions/${userId}`)
+        .expect(200)
+        .then(({ body }) => {
+          txnInfoToDelete = body[0];
+          console.log("info to delete:", txnInfoToDelete)
+        });
+
+      //delete transaction
+      await testSession
+        .delete(`/api/transactions/${txnInfoToDelete._id}`)
+        .expect(204)
+
+      await testSession
+        .get(`/api/transactions/history/${userId}`)
+        .expect(200)
+        .then(({body}) => {
+          expect(body[body.length - 1]).toEqual(txnInfoToDelete)
+        })
     })
   })
   describe("Unsuccessful connection test(s)", () => {

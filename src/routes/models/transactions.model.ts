@@ -43,11 +43,12 @@ export const patchTransactionModel = async (oldTxnInfo: TransactionDataInterface
   })
 }
 
-export const deleteTransactionModel = (txnId: string) => {
+export const deleteTransactionModel = async (txnId: string, user_id: string) => {
+
+  // add ability to move transaction to cancelled transactions folder
   
   return Transaction.deleteOne({_id: txnId})
     .then(result => {
-      console.log(result)
       return result
     })
 }

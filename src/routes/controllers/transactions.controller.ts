@@ -84,7 +84,9 @@ export const patchTransaction = ((req: express.Request, res: express.Response) =
 
 export const deleteTransaction = ((req: express.Request, res: express.Response) => {
   const txnIdString = req.params.txn_id
-  return deleteTransactionModel(txnIdString)
+  const userId = sessionInfo.passport.user
+
+  return deleteTransactionModel(txnIdString, userId)
     .then((result) => {
       res.status(204).send()
     })

@@ -11,7 +11,7 @@ export const transactions = [
         created_at: 1602828180000,
         amount: 1200000,
         history: [],
-        cancelled: 1648272000000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1648272000000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -24,7 +24,7 @@ export const transactions = [
         created_at: 1615148180000,
         amount: 10000,
         history: [],
-        cancelled: 1646985600000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1646985600000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -46,7 +46,7 @@ export const transactions = [
                 },
             },
         ],
-        cancelled: 1646985600000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1646985600000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -59,7 +59,7 @@ export const transactions = [
         created_at: 1639788180000,
         amount: 30000,
         history: [],
-        cancelled: 1645756800000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1645756800000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b50b42e2bcd090b435230",
@@ -81,7 +81,7 @@ export const transactions = [
                 },
             },
         ],
-        cancelled: 1648272000000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1648272000000, // Midnight on a specific date in Unix timestamp format
     },
     // User 2 transactions
     {
@@ -95,7 +95,7 @@ export const transactions = [
         created_at: 1609090180000,
         amount: 100000,
         history: [],
-        cancelled: 1651420800000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1651420800000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -108,7 +108,7 @@ export const transactions = [
         created_at: 1616770180000,
         amount: 5000,
         history: [],
-        cancelled: 1650038400000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1650038400000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -121,7 +121,7 @@ export const transactions = [
         created_at: 1624340180000,
         amount: 60000,
         history: [],
-        cancelled: 1648272000000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1648272000000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b5158c6965d869180e906",
@@ -134,7 +134,7 @@ export const transactions = [
         created_at: 1632020180000,
         amount: 15000,
         history: [],
-        cancelled: 1646985600000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1646985600000, // Midnight on a specific date in Unix timestamp format
     },
     // User 3 transactions
     {
@@ -148,7 +148,7 @@ export const transactions = [
         created_at: 1600912180000,
         amount: 50000,
         history: [],
-        cancelled: 1645756800000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1645756800000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -161,7 +161,7 @@ export const transactions = [
         created_at: 1613232180000,
         amount: 200000,
         history: [],
-        cancelled: 1648272000000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1648272000000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -174,7 +174,7 @@ export const transactions = [
         created_at: 1625552180000,
         amount: 150000,
         history: [],
-        cancelled: 1645756800000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1645756800000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b51a746341227e519c2dc",
@@ -187,7 +187,7 @@ export const transactions = [
         created_at: 1637872180000,
         amount: 70000,
         history: [],
-        cancelled: 1650038400000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1650038400000, // Midnight on a specific date in Unix timestamp format
     },
     // User 4 transactions
     {
@@ -201,7 +201,7 @@ export const transactions = [
         created_at: 1605004180000,
         amount: 1500000,
         history: [],
-        cancelled: 1650038400000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1650038400000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b5292f8a18265e0b77848",
@@ -214,7 +214,7 @@ export const transactions = [
         created_at: 1617324180000,
         amount: 40000,
         history: [],
-        cancelled: 1650038400000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1650038400000, // Midnight on a specific date in Unix timestamp format
     },
     {
         user_id: "655b5292f8a18265e0b77848",
@@ -236,6 +236,6 @@ export const transactions = [
                 },
             },
         ],
-        cancelled: 1650038400000, // Midnight on a specific date in Unix timestamp format
+        cancelled_at: 1650038400000, // Midnight on a specific date in Unix timestamp format
     },
 ];

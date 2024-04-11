@@ -34,7 +34,7 @@ const CancelledTransactionSchema = new mongoose.Schema({
     created_at: Number,
     amount: Number,
     history: Array,
-    cancelled: Number
+    cancelled_at: Number
 });
 export const User = connection.model('User', UserSchema);
 export const Transaction = connection.model('Transaction', TransactionSchema);

@@ -28,5 +28,5 @@ export interface CancelledTransactionDataInterface {
   created_at: number;
   amount: number;
   history: object[];
-  cancelled: number;
+  cancelled_at: number;
 }

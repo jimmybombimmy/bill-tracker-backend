@@ -30,10 +30,10 @@ export const patchTransactionModel = async (oldTxnInfo, userId, txnId, newAmount
         return result;
     });
 };
-export const deleteTransactionModel = (txnId) => {
+export const deleteTransactionModel = async (txnId, user_id) => {
+    // add ability to move transaction to cancelled transactions folder
     return Transaction.deleteOne({ _id: txnId })
         .then(result => {
-        console.log(result);
         return result;
     });
 };
