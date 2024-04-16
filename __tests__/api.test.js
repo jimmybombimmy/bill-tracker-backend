@@ -12,6 +12,8 @@ beforeEach(() => {
   return seed();
 });
 
+(function() {console.clear()})()
+
 ////////Test Template////////
 // describe("[REQUEST] [ENDPOINT]" , () => {
 //   describe("Successful connection test(s)", () => {
@@ -296,7 +298,6 @@ describe("GET /api/transactions/:user", () => {
         .get(`/api/transactions/${userId}`)
         .expect(200)
         .then(({ body }) => {
-          // console.log(body)
           body.forEach((txn) => {
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
@@ -463,7 +464,6 @@ describe("GET /api/transactions/history/:user_id", () => {
         .get(`/api/transactions/history/${userId}`)
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           body.forEach((txn) => {
             expect(txn.user_id).toBe(userId);
             expect(txn).toHaveProperty("_id", expect.any(String));
@@ -928,7 +928,6 @@ describe("DELETE /api/transactions/:txn_id", () => {
     test("204: Transaction has successfully been deleted", async () => {
       const userId = "655b50b42e2bcd090b435230";
 
-      console.log(testSession);
       //Login user
       const userLogin1 = {
         username: "Goku123",
@@ -970,7 +969,7 @@ describe("DELETE /api/transactions/:txn_id", () => {
           });
         });
     });
-    test.skip("200: Deleted transaction has been moved to the Cancelled_Transaction db with a cancelled time", async () => {
+    test("200: Deleted transaction has been moved to the Cancelled_Transaction db with a cancelled time", async () => {
       const userId = "655b50b42e2bcd090b435230";
 
       //Login user
@@ -997,7 +996,6 @@ describe("DELETE /api/transactions/:txn_id", () => {
         .expect(200)
         .then(({ body }) => {
           txnInfoToDelete = body[0];
-          console.log("info to delete:", txnInfoToDelete);
         });
 
       //delete transaction
@@ -1009,9 +1007,19 @@ describe("DELETE /api/transactions/:txn_id", () => {
         .get(`/api/transactions/history/${userId}`)
         .expect(200)
         .then(({ body }) => {
-          expect(body[body.length - 1]).toEqual(txnInfoToDelete);
+          expect(body[body.length - 1]._id).toEqual(txnInfoToDelete._id);
+          expect(body[body.length - 1].name).toEqual(txnInfoToDelete.name);
+          expect(body[body.length - 1].type).toEqual(txnInfoToDelete.type);
+          expect(body[body.length - 1].frequency).toEqual(txnInfoToDelete.frequency);
+          expect(body[body.length - 1].created_at).toEqual(txnInfoToDelete.created_at);
+          expect(body[body.length - 1].amount).toEqual(txnInfoToDelete.amount);
+          expect(body[body.length - 1].history).toEqual(txnInfoToDelete.history);
+          expect(body[body.length - 1].cancelled_at).toBeLessThan(Date.now());
+          expect(body[body.length - 1].cancelled_at).toBeGreaterThan(Date.now() - 10000);
         });
     });
   });
-  describe("Unsuccessful connection test(s)", () => {});
+  describe("Unsuccessful connection test(s)", () => {
+    //bad txn id tests
+  });
 });

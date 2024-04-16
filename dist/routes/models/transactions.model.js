@@ -41,6 +41,25 @@ export const patchTransactionModel = async (oldTxnInfo, userId, txnId, newAmount
 };
 export const deleteTransactionModel = async (txnId, user_id) => {
     // add ability to move transaction to cancelled transactions folder
+    await getSoleTransactionByIdModel(user_id, txnId)
+        .then((txnDetails) => {
+        if (txnDetails) {
+            // any type due to future tests covering for this, 
+            // check back later
+            const txnInfo = {
+                _id: txnDetails._id,
+                user_id,
+                name: txnDetails.name,
+                type: txnDetails.type,
+                frequency: txnDetails.frequency,
+                created_at: txnDetails.created_at,
+                amount: txnDetails.amount,
+                history: [],
+                cancelled_at: Date.now()
+            };
+            Cancelled_Transaction.create(txnInfo);
+        }
+    });
     return Transaction.deleteOne({ _id: txnId })
         .then(result => {
         return result;

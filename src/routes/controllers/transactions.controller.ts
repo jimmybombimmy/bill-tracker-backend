@@ -8,6 +8,7 @@ import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
 
 export const getTransactionsById = ((req: express.Request, res: express.Response) => {
   const user_id = req.params.user_id
+
   if (sessionInfo.passport.user !== user_id) {
     return error401(res, 'userNotAuthed')
   }
@@ -40,7 +41,7 @@ export const getTransactionsHistoryById = ((req: express.Request, res: express.R
       res.status(200).send(result)
     })
 })
-
+ 
 export const postTransaction = ((req: express.Request, res: express.Response) => {
   const txnDetails = req.body
   const created_at = Date.now()
@@ -97,9 +98,9 @@ export const patchTransaction = ((req: express.Request, res: express.Response) =
 
 export const deleteTransaction = ((req: express.Request, res: express.Response) => {
   const txnIdString = req.params.txn_id
-  const userId = sessionInfo.passport.user
+  const user_id = sessionInfo.passport.user
 
-  return deleteTransactionModel(txnIdString, userId)
+  return deleteTransactionModel(txnIdString, user_id)
     .then((result) => {
       res.status(204).send()
     })
