@@ -1,6 +1,6 @@
 import { deleteTransactionModel, getTransactionsByIdModel, getSoleTransactionByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js';
 import { sessionInfo } from '../../app.js';
-import { error400, error401 } from '../errors.js';
+import { error400, error401, error404 } from '../errors.js';
 export const getTransactionsById = ((req, res) => {
     const user_id = req.params.user_id;
     if (sessionInfo.passport.user !== user_id) {
@@ -87,7 +87,15 @@ export const deleteTransaction = ((req, res) => {
     const txnIdString = req.params.txn_id;
     const user_id = sessionInfo.passport.user;
     return deleteTransactionModel(txnIdString, user_id)
-        .then((result) => {
-        res.status(204).send();
+        .then(({ deletedCount }) => {
+        if (deletedCount == 0) {
+            error404(res, 'txnIdNotFound');
+        }
+        else {
+            res.status(204).send();
+        }
+    })
+        .catch((err) => {
+        error400(res, 'txnIdNotValid');
     });
 });

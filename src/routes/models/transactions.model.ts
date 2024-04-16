@@ -55,9 +55,9 @@ export const patchTransactionModel = async (oldTxnInfo: TransactionDataInterface
 
 export const deleteTransactionModel = async (txnId: string, user_id: string) => {
 
-  // add ability to move transaction to cancelled transactions folder
   await getSoleTransactionByIdModel(user_id, txnId)
     .then((txnDetails) => {
+      
       if (txnDetails) {
         // any type due to future tests covering for this, 
         // check back later
@@ -75,6 +75,10 @@ export const deleteTransactionModel = async (txnId: string, user_id: string) => 
         Cancelled_Transaction.create(txnInfo)
       }
     })
+    .catch(() => {
+      return
+    })
+    
 
   return Transaction.deleteOne({ _id: txnId })
     .then(result => {

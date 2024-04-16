@@ -12,7 +12,9 @@ beforeEach(() => {
   return seed();
 });
 
-(function() {console.clear()})()
+(function () {
+  console.clear();
+})();
 
 ////////Test Template////////
 // describe("[REQUEST] [ENDPOINT]" , () => {
@@ -1010,16 +1012,75 @@ describe("DELETE /api/transactions/:txn_id", () => {
           expect(body[body.length - 1]._id).toEqual(txnInfoToDelete._id);
           expect(body[body.length - 1].name).toEqual(txnInfoToDelete.name);
           expect(body[body.length - 1].type).toEqual(txnInfoToDelete.type);
-          expect(body[body.length - 1].frequency).toEqual(txnInfoToDelete.frequency);
-          expect(body[body.length - 1].created_at).toEqual(txnInfoToDelete.created_at);
+          expect(body[body.length - 1].frequency).toEqual(
+            txnInfoToDelete.frequency
+          );
+          expect(body[body.length - 1].created_at).toEqual(
+            txnInfoToDelete.created_at
+          );
           expect(body[body.length - 1].amount).toEqual(txnInfoToDelete.amount);
-          expect(body[body.length - 1].history).toEqual(txnInfoToDelete.history);
+          expect(body[body.length - 1].history).toEqual(
+            txnInfoToDelete.history
+          );
           expect(body[body.length - 1].cancelled_at).toBeLessThan(Date.now());
-          expect(body[body.length - 1].cancelled_at).toBeGreaterThan(Date.now() - 10000);
+          expect(body[body.length - 1].cancelled_at).toBeGreaterThan(
+            Date.now() - 10000
+          );
         });
     });
   });
   describe("Unsuccessful connection test(s)", () => {
-    //bad txn id tests
+    test("400: Invalid Transaction ID produces an error", async () => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession
+        .delete(`/api/transactions/InvalidTxnId1234567890`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Error 400 - Bad Request: Transaction ID not valid"
+          );
+        });
+    });
+    test("404: Valid but incorrect Transaction ID produces an error", async () => {
+      const userId = "655b50b42e2bcd090b435230";
+
+      //Login user
+      const userLogin1 = {
+        username: "Goku123",
+        password: "test",
+      };
+
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession
+        .delete(`/api/transactions/655b50b42e2bcd090b123456`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe(
+            "Error 404: Transaction ID not found"
+          );
+        });
+    });
   });
 });

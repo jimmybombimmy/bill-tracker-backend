@@ -14,6 +14,11 @@ export const error400 = ((res, reason) => {
             message: 'Error 400 - Bad Request: Transaction info should be a number'
         });
     }
+    else if (reason === 'txnIdNotValid') {
+        res.status(400).send({
+            message: 'Error 400 - Bad Request: Transaction ID not valid'
+        });
+    }
 });
 export const error401 = ((res, reason) => {
     if (reason === 'userNotMatched') {
@@ -32,6 +37,11 @@ export const error404 = ((res, reason) => {
     else if (reason === 'userNotFound') {
         res.status(404).send({
             message: 'Error 404: User ID not found'
+        });
+    }
+    else if (reason === 'txnIdNotFound') {
+        res.status(404).send({
+            message: 'Error 404: Transaction ID not found'
         });
     }
 });

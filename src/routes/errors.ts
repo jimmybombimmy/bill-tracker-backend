@@ -13,6 +13,10 @@ export const error400 = ((res: express.Response, reason: string) => {
     res.status(400).send({
       message: 'Error 400 - Bad Request: Transaction info should be a number'
     })    
+  } else if (reason === 'txnIdNotValid') {
+    res.status(400).send({
+      message: 'Error 400 - Bad Request: Transaction ID not valid'
+    })    
   }
 })
 
@@ -32,6 +36,10 @@ export const error404 = ((res: express.Response, reason: string) => {
   } else if (reason === 'userNotFound') {
     res.status(404).send({
       message: 'Error 404: User ID not found'
+    })
+  } else if (reason === 'txnIdNotFound') {
+    res.status(404).send({
+      message: 'Error 404: Transaction ID not found'
     })
   }
 })

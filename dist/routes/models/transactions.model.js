@@ -40,7 +40,6 @@ export const patchTransactionModel = async (oldTxnInfo, userId, txnId, newAmount
     });
 };
 export const deleteTransactionModel = async (txnId, user_id) => {
-    // add ability to move transaction to cancelled transactions folder
     await getSoleTransactionByIdModel(user_id, txnId)
         .then((txnDetails) => {
         if (txnDetails) {
@@ -59,6 +58,9 @@ export const deleteTransactionModel = async (txnId, user_id) => {
             };
             Cancelled_Transaction.create(txnInfo);
         }
+    })
+        .catch(() => {
+        return;
     });
     return Transaction.deleteOne({ _id: txnId })
         .then(result => {

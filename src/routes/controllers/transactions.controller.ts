@@ -1,7 +1,7 @@
 import express from 'express'
 import { deleteTransactionModel, getTransactionsByIdModel, getSoleTransactionByIdModel, getTransactionsHistoryByIdModel, patchTransactionModel, postTransactionModel } from '../models/transactions.model.js'
 import { sessionInfo } from '../../app.js'
-import { error400, error401 } from '../errors.js'
+import { error400, error401, error404 } from '../errors.js'
 import { TransactionDataInterface } from '../../interfaces/data.interfaces.js'
 
 
@@ -101,7 +101,14 @@ export const deleteTransaction = ((req: express.Request, res: express.Response) 
   const user_id = sessionInfo.passport.user
 
   return deleteTransactionModel(txnIdString, user_id)
-    .then((result) => {
-      res.status(204).send()
+    .then(({deletedCount}) => {
+      if (deletedCount == 0) {
+        error404(res, 'txnIdNotFound')
+      } else {
+        res.status(204).send()
+      }
+    })
+    .catch((err) => {
+        error400(res, 'txnIdNotValid')
     })
 })
