@@ -55,11 +55,16 @@ export const logoutUser = (async (req, res, next) => {
 export const forgotPassword = ((req, res, next) => {
     const userEmail = req.body.email;
     const resetUrl = `${req.protocol}://${req.get('host')}/api/reset-password`;
-    forgotPasswordModel(userEmail, resetUrl)
-        .then(() => {
-        res.status(201).send({
-            message: "Password reset email sent successfully"
-        });
+    forgotPasswordModel(userEmail, resetUrl, next)
+        .then((result) => {
+        if (result) {
+            res.status(201).send({
+                message: "Password reset email sent successfully"
+            });
+        }
+        else {
+            return error401(res, 'emailNotMatched');
+        }
     });
 });
 export const passwordReset = ((req, res, next) => {

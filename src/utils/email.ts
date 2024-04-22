@@ -11,8 +11,9 @@ const transporter = nodemailer.createTransport({
 
 
 export const sendPasswordResetEmail = (resetToken: string, userEmail: string, resetUrl: string) => {
-  //To do: configure href link for a tag
-  const email = transporter.sendMail({
+
+  
+  return transporter.sendMail({
     from: "passwordreset@billstracker.com",
     to: userEmail,
     subject: "Bills Tracker - Password Reset",

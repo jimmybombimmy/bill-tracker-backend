@@ -25,6 +25,8 @@ export const error401 = ((res: express.Response, reason: string) => {
     res.status(401).send({message: 'Error 401: Username or Password is incorrect'})
   } else if (reason === 'userNotAuthed') {
     res.status(401).send({message: 'Error 401: User is not authorized to view information'})
+  } else if (reason === 'emailNotMatched') {
+    res.status(401).send({message: 'Error 401: Email does not match our records'})
   }
 })
 

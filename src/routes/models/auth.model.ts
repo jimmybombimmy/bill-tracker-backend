@@ -28,26 +28,22 @@ export const registerUserModel = (async (newUser: any, res: express.Response) =>
 
 })
 
-export const forgotPasswordModel = (async (userEmail: string, resetUrl: string) => {
+export const forgotPasswordModel = (async (userEmail: string, resetUrl: string, next: express.NextFunction) => {
   const existingUser = await User.findOne({
     email: userEmail
   })
 
   if (!existingUser) {
-    //add error return here
-    return
+    return next();
   }
 
   const resetToken = generateRandomHash()
   const passwordResetToken = getPasswordResetToken(resetToken)
 
   return User.updateOne({ username: existingUser.username }, { $set: { passwordReset: passwordResetToken } })
-  .then(({acknowledged, modifiedCount}) => {
-    if (acknowledged && modifiedCount > 0) {
-      return sendPasswordResetEmail(resetToken, userEmail, resetUrl)
-    }
-    // else error
-  })
-  
-
+    .then(({acknowledged, modifiedCount}) => {
+      if (acknowledged && modifiedCount > 0) {
+        return sendPasswordResetEmail(resetToken, userEmail, resetUrl)
+      }
+    })
 })

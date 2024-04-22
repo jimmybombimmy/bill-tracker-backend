@@ -21,13 +21,12 @@ export const registerUserModel = (async (newUser, res) => {
         return user;
     });
 });
-export const forgotPasswordModel = (async (userEmail, resetUrl) => {
+export const forgotPasswordModel = (async (userEmail, resetUrl, next) => {
     const existingUser = await User.findOne({
         email: userEmail
     });
     if (!existingUser) {
-        //add error return here
-        return;
+        return next();
     }
     const resetToken = generateRandomHash();
     const passwordResetToken = getPasswordResetToken(resetToken);
@@ -36,6 +35,5 @@ export const forgotPasswordModel = (async (userEmail, resetUrl) => {
         if (acknowledged && modifiedCount > 0) {
             return sendPasswordResetEmail(resetToken, userEmail, resetUrl);
         }
-        // else error
     });
 });

@@ -276,23 +276,36 @@ describe("POST /api/login", () => {
   });
 });
 
-describe.only("POST /api/forgot-password", () => {
+describe("POST /api/forgot-password", () => {
   describe("Successful connection test(s)", () => {
     test("201: Password reset email sent successfully", () => {
-      const userEmail = {email: "vegeta@saiyanprince.com"}
-      const userName = {username: "Vegeta123"}
+      const userEmail = { email: "vegeta@saiyanprince.com" };
+      const userName = { username: "Vegeta123" };
 
       return request(app)
         .post("/api/forgot-password")
         .send(userEmail)
         .expect(201)
         .then(({ body }) => {
-          expect(body).toEqual({message: 'Password reset email sent successfully'})
+          expect(body).toEqual({
+            message: "Password reset email sent successfully",
+          });
         });
     });
   });
   describe("Unsuccessful connection test(s)", () => {
-    //1: No username matches the email
+    test("401: Will give an error if email does not match records", () => {
+      const userEmail = { email: "ash@pallettowngym.com" };
+      return request(app)
+        .post("/api/forgot-password")
+        .send(userEmail)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            message: "Error 401: Email does not match our records",
+          });
+        });
+    });
   });
 });
 
