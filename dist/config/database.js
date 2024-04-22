@@ -15,7 +15,8 @@ const UserSchema = new mongoose.Schema({
     email: String,
     hash: String,
     salt: String,
-    admin: Boolean
+    admin: Boolean,
+    passwordReset: { passwordResetToken: String, passwordResetTokenExpires: String }
 });
 const TransactionSchema = new mongoose.Schema({
     user_id: String,

@@ -1,8 +1,8 @@
 import express from 'express'
 import passport from 'passport'
-import { genPassword } from '../../lib/passwordUtils.js'
+import { genPassword } from '../../utils/passwordUtils.js'
 import {connection} from '../../config/database.js'
-import { registerUserModel } from '../models/auth.model.js'
+import { forgotPasswordModel, registerUserModel } from '../models/auth.model.js'
 import { error401, error409 } from '../errors.js'
 const User = connection.models.User
 
@@ -60,4 +60,20 @@ export const logoutUser = (async (req: express.Request, res: express.Response, n
         message: "Logout successful",
       });
   });
+})
+
+export const forgotPassword = ((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const userEmail = req.body.email
+  const resetUrl = `${req.protocol}://${req.get('host')}/api/reset-password`
+
+  forgotPasswordModel(userEmail, resetUrl)
+    .then(() => {
+      res.status(201).send({
+        message: "Password reset email sent successfully"
+      })
+    })
+})
+
+export const passwordReset = ((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  
 })

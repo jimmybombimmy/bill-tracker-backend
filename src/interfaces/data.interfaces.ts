@@ -1,5 +1,3 @@
-
-
 export interface TransactionDataInterface {
   user_id: string;
   name: string;
@@ -17,6 +15,7 @@ export interface UserDataInterface {
   hash: string;
   salt: string;
   admin: boolean;
+  passwordReset: {passwordResetToken: string, passwordResetTokenExpires: string}
   __v: number;
 }
 

@@ -276,6 +276,26 @@ describe("POST /api/login", () => {
   });
 });
 
+describe.only("POST /api/forgot-password", () => {
+  describe("Successful connection test(s)", () => {
+    test("201: TYPE SOMETHING HERE", () => {
+      const userEmail = {email: "vegeta@saiyanprince.com"}
+      const userName = {username: "Vegeta123"}
+
+      return request(app)
+        .post("/api/forgot-password")
+        .send(userEmail)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body).toEqual({message: 'Password reset email sent successfully'})
+        });
+    });
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    //1: No username matches the email
+  });
+});
+
 describe("GET /api/transactions/:user", () => {
   describe("Successful connection test(s)", () => {
     test("200: Receives all of users transactions when they are logged in", async () => {
@@ -1077,9 +1097,7 @@ describe("DELETE /api/transactions/:txn_id", () => {
         .delete(`/api/transactions/655b50b42e2bcd090b123456`)
         .expect(404)
         .then(({ body }) => {
-          expect(body.message).toBe(
-            "Error 404: Transaction ID not found"
-          );
+          expect(body.message).toBe("Error 404: Transaction ID not found");
         });
     });
   });

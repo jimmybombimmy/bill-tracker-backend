@@ -1,4 +1,6 @@
 import { User } from '../../config/database.js';
+import { generateRandomHash, getPasswordResetToken } from '../../utils/otherCryptoUtils.js';
+import { sendPasswordResetEmail } from '../../utils/email.js';
 export const registerUserModel = (async (newUser, res) => {
     const existingUser = await User.findOne({
         $or: [
@@ -17,5 +19,23 @@ export const registerUserModel = (async (newUser, res) => {
     return newUser.save(newUser)
         .then((user) => {
         return user;
+    });
+});
+export const forgotPasswordModel = (async (userEmail, resetUrl) => {
+    const existingUser = await User.findOne({
+        email: userEmail
+    });
+    if (!existingUser) {
+        //add error return here
+        return;
+    }
+    const resetToken = generateRandomHash();
+    const passwordResetToken = getPasswordResetToken(resetToken);
+    return User.updateOne({ username: existingUser.username }, { $set: { passwordReset: passwordResetToken } })
+        .then(({ acknowledged, modifiedCount }) => {
+        if (acknowledged && modifiedCount > 0) {
+            return sendPasswordResetEmail(resetToken, userEmail, resetUrl);
+        }
+        // else error
     });
 });
