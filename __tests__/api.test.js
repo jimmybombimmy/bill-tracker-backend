@@ -278,7 +278,7 @@ describe("POST /api/login", () => {
 
 describe.only("POST /api/forgot-password", () => {
   describe("Successful connection test(s)", () => {
-    test("201: TYPE SOMETHING HERE", () => {
+    test("201: Password reset email sent successfully", () => {
       const userEmail = {email: "vegeta@saiyanprince.com"}
       const userName = {username: "Vegeta123"}
 
