@@ -41,9 +41,25 @@ export const forgotPasswordModel = (async (userEmail: string, resetUrl: string, 
   const passwordResetToken = getPasswordResetToken(resetToken)
 
   return User.updateOne({ username: existingUser.username }, { $set: { passwordReset: passwordResetToken } })
-    .then(({acknowledged, modifiedCount}) => {
+    .then(({ acknowledged, modifiedCount }) => {
       if (acknowledged && modifiedCount > 0) {
         return sendPasswordResetEmail(resetToken, userEmail, resetUrl)
       }
+    })
+})
+
+export const passwordResetModel = (async (token: string, newPassword: {salt: string, hash: string}) => {
+  const matchingToken = getPasswordResetToken(token)
+  const existingUser = await User.findOne({ 'passwordReset.passwordResetToken': matchingToken.passwordResetToken })
+
+  if (existingUser == null) {
+    //update this with unsuccessful connection tests
+    console.log("Couldn't find user")
+    return
+  }
+
+  return User.updateOne({ username: existingUser.username }, {$set: newPassword})
+    .then((result) => {
+      return result
     })
 })

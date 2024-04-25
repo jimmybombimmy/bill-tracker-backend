@@ -15,7 +15,7 @@ export interface UserDataInterface {
   hash: string;
   salt: string;
   admin: boolean;
-  passwordReset: {passwordResetToken: string, passwordResetTokenExpires: string}
+  passwordReset: {passwordResetToken: string, passwordResetTokenExpires: Number|string}
   __v: number;
 }
 

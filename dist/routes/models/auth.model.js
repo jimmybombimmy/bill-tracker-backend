@@ -37,3 +37,16 @@ export const forgotPasswordModel = (async (userEmail, resetUrl, next) => {
         }
     });
 });
+export const passwordResetModel = (async (token, newPassword) => {
+    const matchingToken = getPasswordResetToken(token);
+    const existingUser = await User.findOne({ 'passwordReset.passwordResetToken': matchingToken.passwordResetToken });
+    if (existingUser == null) {
+        //update this with unsuccessful connection tests
+        console.log("Couldn't find user");
+        return;
+    }
+    return User.updateOne({ username: existingUser.username }, { $set: newPassword })
+        .then((result) => {
+        return result;
+    });
+});

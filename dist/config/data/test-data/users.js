@@ -30,13 +30,15 @@ export const users = [
         passwordReset: { passwordResetToken: "null", passwordResetTokenExpires: "null" },
         __v: 0
     },
+    // password test done with Bulma123
+    // token in email to be sent in tests: "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac"
     {
         _id: "655b5292f8a18265e0b77848",
         username: "Bulma123",
         email: "bulma@capsulecorp.com",
         hash: "d58f26390dc71664a3720d98e9de94c3fc638e6b1060705f1622c453dbe8233ba4cb95db8fc5070c4e541938d6e50124d58b372fe4d45ac930047eb76ffb244b",
         salt: "cc27570869b35a176146e22ce77b3376ab1c59f34a2f94fd524be8cf4e0e1b9b",
-        passwordReset: { passwordResetToken: "null", passwordResetTokenExpires: "null" },
+        passwordReset: { passwordResetToken: "bde5e41086ee3a7ea660453a6a7b384d637d5192f0330981ebd0ebab006bd635", passwordResetTokenExpires: Date.now() * 10 * 60 * 1000 },
         admin: false,
         __v: 0
     },

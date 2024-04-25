@@ -2,7 +2,7 @@ import express, { ErrorRequestHandler } from 'express'
 import passport from 'passport'
 import { genPassword } from '../../utils/passwordUtils.js'
 import { connection } from '../../config/database.js'
-import { forgotPasswordModel, registerUserModel } from '../models/auth.model.js'
+import { forgotPasswordModel, passwordResetModel, registerUserModel } from '../models/auth.model.js'
 import { error401, error409 } from '../errors.js'
 const User = connection.models.User
 
@@ -79,5 +79,14 @@ export const forgotPassword = ((req: express.Request, res: express.Response, nex
 })
 
 export const passwordReset = ((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const token = req.params.token
+  const newPassword = genPassword(req.body.password)
+
+  passwordResetModel(token, newPassword)
+  .then((result) => {
+    if (result && result.acknowledged && result.modifiedCount == 1 && result.matchedCount == 1) {
+        return res.status(200).send({message: "Password changed successfully!"})
+    }
+  })
 
 })

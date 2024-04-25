@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { genPassword } from '../../utils/passwordUtils.js';
 import { connection } from '../../config/database.js';
-import { forgotPasswordModel, registerUserModel } from '../models/auth.model.js';
+import { forgotPasswordModel, passwordResetModel, registerUserModel } from '../models/auth.model.js';
 import { error401, error409 } from '../errors.js';
 const User = connection.models.User;
 export const registerUser = ((req, res) => {
@@ -68,4 +68,12 @@ export const forgotPassword = ((req, res, next) => {
     });
 });
 export const passwordReset = ((req, res, next) => {
+    const token = req.params.token;
+    const newPassword = genPassword(req.body.password);
+    passwordResetModel(token, newPassword)
+        .then((result) => {
+        if (result && result.acknowledged && result.modifiedCount == 1 && result.matchedCount == 1) {
+            return res.status(200).send({ message: "Password changed successfully!" });
+        }
+    });
 });

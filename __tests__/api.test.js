@@ -9,6 +9,9 @@ var testSession = null;
 
 beforeEach(() => {
   testSession = session(app);
+  // testSession.url.port = 9090;
+  // testSession.url.host = "127.0.0.1:9090";
+  // testSession.url.href = "http://127.0.0.1:9090";
   return seed();
 });
 
@@ -306,6 +309,29 @@ describe("POST /api/forgot-password", () => {
           });
         });
     });
+  });
+});
+
+describe("PATCH /api/reset-password/:token", () => {
+  describe("Successful connection test(s)", () => {
+    test("[STATUS CODE]: [DESCRIPTION]", async () => {
+      const userEmail = { email: "bulma@capsulecorp.com" };
+      const user_id = "655b5292f8a18265e0b77848";
+      const token =
+        "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac";
+
+      return request(app)
+        .patch(`/api/reset-password/${token}`)
+        .send({password: "newPass123"})
+        .expect(200)
+        .then(({body}) => {
+          expect(body.message).toBe("Password changed successfully!");
+        });
+    });
+  });
+  describe("Unsuccessful connection test(s)", () => {
+    //1) if token expired, produce error
+    //2) if no user found, produce error
   });
 });
 
@@ -1114,4 +1140,9 @@ describe("DELETE /api/transactions/:txn_id", () => {
         });
     });
   });
+});
+
+const port = 9090;
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
