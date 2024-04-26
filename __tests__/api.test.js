@@ -4,6 +4,7 @@ import session from "supertest-session";
 import "jest-matcher-one-of";
 import seed from "../dist/config/seed.js";
 import { sessionInfo, passportInfo } from "../dist/app.js";
+import { genPassword } from "../dist/utils/passwordUtils.js";
 
 var testSession = null;
 
@@ -314,24 +315,67 @@ describe("POST /api/forgot-password", () => {
 
 describe("PATCH /api/reset-password/:token", () => {
   describe("Successful connection test(s)", () => {
-    test("[STATUS CODE]: [DESCRIPTION]", async () => {
-      const userEmail = { email: "bulma@capsulecorp.com" };
-      const user_id = "655b5292f8a18265e0b77848";
+    test("200: Password updated successfully", () => {
+      const newPassword = "newPass123";
       const token =
         "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac";
 
       return request(app)
         .patch(`/api/reset-password/${token}`)
-        .send({password: "newPass123"})
+        .send({ password: newPassword })
         .expect(200)
-        .then(({body}) => {
+        .then(({ body }) => {
           expect(body.message).toBe("Password changed successfully!");
+        });
+    });
+    test("201: User able to log in with new password", async () => {
+      const newPassword = "newPass123";
+      const token =
+        "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac";
+
+      await request(app)
+        .patch(`/api/reset-password/${token}`)
+        .send({ password: newPassword })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.message).toBe("Password changed successfully!");
+        });
+
+      const userLogin1 = {
+        username: "Bulma123",
+        password: newPassword,
+      };
+      const preRedirect = await testSession
+        .post("/api/login")
+        .send(userLogin1)
+        .expect(302);
+
+      const redirectedUrl = preRedirect.headers.location;
+      expect(redirectedUrl).toBe("/api/login-success");
+
+      await testSession
+        .get(redirectedUrl)
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toMatchObject({
+            message: "Login successful",
+          });
+        });
+
+      return testSession
+        .post("/api/logout")
+        .expect(201)
+        .then((response) => {
+          expect(response.body).toMatchObject({
+            message: "Logout successful",
+          });
         });
     });
   });
   describe("Unsuccessful connection test(s)", () => {
     //1) if token expired, produce error
     //2) if no user found, produce error
+    //3) Old password should not work
   });
 });
 
