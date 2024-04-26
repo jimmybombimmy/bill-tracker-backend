@@ -48,6 +48,11 @@ export const error404 = ((res, reason) => {
         });
     }
 });
+export const error408 = ((res, reason) => {
+    res.status(408).send({
+        message: `Error 408: ${reason}`
+    });
+});
 export const error409 = ((res, reason) => {
     res.status(409).send({
         message: `Error 409: ${reason}`

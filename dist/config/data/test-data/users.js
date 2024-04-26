@@ -42,13 +42,15 @@ export const users = [
         admin: false,
         __v: 0
     },
+    // This user is similar to Bulma123, except their token will have expired
+    // token in email to be sent in tests: "e3c978be171cd3ab7c861351dcc6ef3db2ce6bd13be2560817f3b3697c2008a7"
     {
         _id: "655b52b296b1af33bdb06bfb",
         username: "Trunks123",
         email: "trunks@future.com",
         hash: "b3ced5f777a5e0e8df0e17e3fa19da13bf6b34c9bdc9943b8c55a683c8824a1b8912a4d23ac7b844fa011ea40b1be50dff3caf62634d5df796d1e9d1efc5c708",
         salt: "501c81f31d010786129748b37be296b8962ca064681fae90a95cec4d730227b6",
-        passwordReset: { passwordResetToken: "null", passwordResetTokenExpires: "null" },
+        passwordReset: { passwordResetToken: "1a34406843e4310565ad2e4598e9d419d4b9900b16cfd176d3b0495a68ec179f", passwordResetTokenExpires: Date.now() },
         admin: false,
         __v: 0
     },

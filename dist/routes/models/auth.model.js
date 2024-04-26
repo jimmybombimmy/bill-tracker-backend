@@ -40,10 +40,12 @@ export const forgotPasswordModel = (async (userEmail, resetUrl, next) => {
 export const passwordResetModel = (async (token, newPassword) => {
     const matchingToken = getPasswordResetToken(token);
     const existingUser = await User.findOne({ 'passwordReset.passwordResetToken': matchingToken.passwordResetToken });
+    const passwordExpiry = Number(existingUser?.passwordReset?.passwordResetTokenExpires);
     if (existingUser == null) {
-        //update this with unsuccessful connection tests
-        console.log("Couldn't find user");
-        return;
+        return { message: "userNotFound" };
+    }
+    if (Number(passwordExpiry) < Date.now()) {
+        return { message: "Password reset token expired" };
     }
     return User.updateOne({ username: existingUser.username }, { $set: newPassword })
         .then((result) => {

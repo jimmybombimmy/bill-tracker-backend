@@ -280,38 +280,41 @@ describe("POST /api/login", () => {
   });
 });
 
-describe("POST /api/forgot-password", () => {
-  describe("Successful connection test(s)", () => {
-    test("201: Password reset email sent successfully", () => {
-      const userEmail = { email: "vegeta@saiyanprince.com" };
-      const userName = { username: "Vegeta123" };
+// This test currently commented out due to risk of exceeding MailTraps limit
+// Not required currently as user Bulma123 has credentials saved in seed
 
-      return request(app)
-        .post("/api/forgot-password")
-        .send(userEmail)
-        .expect(201)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            message: "Password reset email sent successfully",
-          });
-        });
-    });
-  });
-  describe("Unsuccessful connection test(s)", () => {
-    test("401: Will give an error if email does not match records", () => {
-      const userEmail = { email: "ash@pallettowngym.com" };
-      return request(app)
-        .post("/api/forgot-password")
-        .send(userEmail)
-        .expect(401)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            message: "Error 401: Email does not match our records",
-          });
-        });
-    });
-  });
-});
+// describe("POST /api/forgot-password", () => {
+//   describe("Successful connection test(s)", () => {
+//     test("201: Password reset email sent successfully", () => {
+//       const userEmail = { email: "vegeta@saiyanprince.com" };
+//       const userName = { username: "Vegeta123" };
+
+//       return request(app)
+//         .post("/api/forgot-password")
+//         .send(userEmail)
+//         .expect(201)
+//         .then(({ body }) => {
+//           expect(body).toEqual({
+//             message: "Password reset email sent successfully",
+//           });
+//         });
+//     });
+//   });
+//   describe("Unsuccessful connection test(s)", () => {
+//     test("401: Will give an error if email does not match records", () => {
+//       const userEmail = { email: "ash@pallettowngym.com" };
+//       return request(app)
+//         .post("/api/forgot-password")
+//         .send(userEmail)
+//         .expect(401)
+//         .then(({ body }) => {
+//           expect(body).toEqual({
+//             message: "Error 401: Email does not match our records",
+//           });
+//         });
+//     });
+//   });
+// });
 
 describe("PATCH /api/reset-password/:token", () => {
   describe("Successful connection test(s)", () => {
@@ -373,9 +376,61 @@ describe("PATCH /api/reset-password/:token", () => {
     });
   });
   describe("Unsuccessful connection test(s)", () => {
-    //1) if token expired, produce error
-    //2) if no user found, produce error
-    //3) Old password should not work
+    test("408: Error should be produced if password reset token expired", () => {
+      const newPassword = "newPass123";
+      const token =
+        "e3c978be171cd3ab7c861351dcc6ef3db2ce6bd13be2560817f3b3697c2008a7";
+
+      return request(app)
+        .patch(`/api/reset-password/${token}`)
+        .send({ password: newPassword })
+        .expect(408)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 408: Password reset token expired");
+        });
+    });
+
+    test.only("404: Unable to find user with reset token", () => {
+      const newPassword = "newPass123";
+      const token = "InvalidToken123";
+
+      return request(app)
+        .patch(`/api/reset-password/${token}`)
+        .send({ password: newPassword })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).toBe("Error 404: User ID not found");
+        });
+    });
+
+    test("404: Unable to find user with reset token", async() => {
+      const newPassword = "newPass123";
+      const token =
+        "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac";
+
+      await request(app)
+        .patch(`/api/reset-password/${token}`)
+        .send({ password: newPassword })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.message).toBe("Password changed successfully!");
+        });
+
+      const badUserLogin = {
+        username: "Bulma123",
+        password: "test",
+      };
+
+      return request(app)
+        .post("/api/login")
+        .send(badUserLogin)
+        .expect(401)
+        .then(({ body }) => {
+          expect(body).toMatchObject({
+            message: "Error 401: Username or Password is incorrect",
+          });
+        });
+    });
   });
 });
 

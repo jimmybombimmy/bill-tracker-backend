@@ -3,7 +3,7 @@ import passport from 'passport'
 import { genPassword } from '../../utils/passwordUtils.js'
 import { connection } from '../../config/database.js'
 import { forgotPasswordModel, passwordResetModel, registerUserModel } from '../models/auth.model.js'
-import { error401, error409 } from '../errors.js'
+import { error401, error404, error408, error409 } from '../errors.js'
 const User = connection.models.User
 
 export const registerUser = ((req: express.Request, res: express.Response) => {
@@ -83,9 +83,15 @@ export const passwordReset = ((req: express.Request, res: express.Response, next
   const newPassword = genPassword(req.body.password)
 
   passwordResetModel(token, newPassword)
-  .then((result) => {
+  .then((result: any) => {
+    if (result.message == "Password reset token expired") {
+      return error408(res, result.message)
+    } 
+    if (result.message == "userNotFound") {
+      return error404(res, result.message)
+    }
     if (result && result.acknowledged && result.modifiedCount == 1 && result.matchedCount == 1) {
-        return res.status(200).send({message: "Password changed successfully!"})
+      return res.status(200).send({message: "Password changed successfully!"})
     }
   })
 
