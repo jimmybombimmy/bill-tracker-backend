@@ -1,13 +1,15 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const ENV = process.env.NODE_ENV || 'test';
-dotenv.config({
-    path: `${__dirname}/../../.env.${ENV}` //change this
-});
+// Below code was never needed. 
+// Keeping code just incase needed for development data in the future
+// If so, change 'test' to 'development' and create .env.development
+// const ENV = process.env.NODE_ENV || 'test';
+// dotenv.config({
+//   path: `${__dirname}/../../.env.${ENV}` //change this
+// })
 const conn = process.env.DB_STRING;
 export const connection = mongoose.createConnection(conn);
 const UserSchema = new mongoose.Schema({

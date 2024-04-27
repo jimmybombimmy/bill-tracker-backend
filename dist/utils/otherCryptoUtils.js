@@ -5,6 +5,6 @@ export const generateRandomHash = () => {
 };
 export const getPasswordResetToken = (token) => {
     const passwordResetToken = crypto.createHash('sha256').update(token).digest('hex');
-    const passwordResetTokenExpires = Date.now() * 10 * 60 * 1000;
+    const passwordResetTokenExpires = Date.now() + (10 * 60 * 1000);
     return { passwordResetToken, passwordResetTokenExpires };
 };

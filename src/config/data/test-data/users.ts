@@ -42,7 +42,7 @@ export const users: UserDataInterface[] = [
     email: "bulma@capsulecorp.com",
     hash: "d58f26390dc71664a3720d98e9de94c3fc638e6b1060705f1622c453dbe8233ba4cb95db8fc5070c4e541938d6e50124d58b372fe4d45ac930047eb76ffb244b",
     salt: "cc27570869b35a176146e22ce77b3376ab1c59f34a2f94fd524be8cf4e0e1b9b",
-    passwordReset: {passwordResetToken: "bde5e41086ee3a7ea660453a6a7b384d637d5192f0330981ebd0ebab006bd635", passwordResetTokenExpires: Date.now() * 10 * 60 * 1000},
+    passwordReset: {passwordResetToken: "bde5e41086ee3a7ea660453a6a7b384d637d5192f0330981ebd0ebab006bd635", passwordResetTokenExpires: Date.now() + (10 * 60 * 1000)},
     admin: false,
     __v: 0
   },

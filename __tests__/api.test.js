@@ -10,9 +10,6 @@ var testSession = null;
 
 beforeEach(() => {
   testSession = session(app);
-  // testSession.url.port = 9090;
-  // testSession.url.host = "127.0.0.1:9090";
-  // testSession.url.href = "http://127.0.0.1:9090";
   return seed();
 });
 
@@ -390,7 +387,7 @@ describe("PATCH /api/reset-password/:token", () => {
         });
     });
 
-    test.only("404: Unable to find user with reset token", () => {
+    test("404: Unable to find user with reset token", () => {
       const newPassword = "newPass123";
       const token = "InvalidToken123";
 
@@ -403,7 +400,7 @@ describe("PATCH /api/reset-password/:token", () => {
         });
     });
 
-    test("404: Unable to find user with reset token", async() => {
+    test("404: Unable to find user with reset token", async () => {
       const newPassword = "newPass123";
       const token =
         "e603f9f3ce342368cba6009be557878640631cc635ca9f8eb40d4754008fcaac";
