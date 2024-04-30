@@ -4,7 +4,13 @@ import { getAllUsers, getUserById } from "./controllers/users.controller.js";
 import { pageNotFound } from "./errors.js";
 import { forgotPassword, loginSuccess, loginUser, logoutUser, passwordReset, registerUser } from "./controllers/auth.controller.js";
 import { getTransactionsById, getSoleTransactionById, getTransactionsHistoryById, patchTransaction, postTransaction, deleteTransaction } from "./controllers/transactions.controller.js";
+import { connectToDB, disconnectFromDB } from "../config/connect.js";
 const router = Router();
+connectToDB();
+router.use((req, res, next) => {
+    disconnectFromDB();
+    next();
+});
 // User Routes
 router.get('/api/users', getAllUsers);
 router.get('/api/users/:user_id', getUserById);

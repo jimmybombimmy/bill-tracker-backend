@@ -13,29 +13,19 @@ dotenv.config({
   path: `${__dirname}/../../.env.${ENV}`
 })
 
+const uri = process.env.DB_STRING
+const client = new MongoClient(uri!);
 
 
-async function main() {
-
-  // console.log(process.env)
-
-  const uri = process.env.MONGO_CONNECT
-  // console.log(uri)
+export async function connectToDB() {
 
   if (uri == undefined) {
     return console.log("Could not connect to db")
   }
 
-  const client = new MongoClient(uri);
-
-  // console.log(client)
-
   return client.connect()
     .then((r) => {
-      return listDatabases(client)
-    })
-    .then(() => {
-      return client.close()
+      // return listDatabases(client)
     })
     .catch((e) => {
       console.error("error", e)
@@ -43,10 +33,16 @@ async function main() {
 
 }
 
-main().catch(console.error)
+export async function disconnectFromDB() {
+  return client.close()
+}
+
+// main().catch(console.error)
 
 async function listDatabases(client: any) {
   const databasesList = await client.db().admin().listDatabases();
+
+  // console.log("client:", client.serverStatus())
 
   console.log("Databases:")
   databasesList.databases.forEach((db: any) => {
@@ -54,3 +50,6 @@ async function listDatabases(client: any) {
   }) 
 }
 
+async function listConnections(client: any) {
+  const connectionsList = await client
+}

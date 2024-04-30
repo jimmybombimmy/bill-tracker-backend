@@ -1,7 +1,7 @@
 import express from 'express';
 import databaseUse from './config/session.js';
 import passport from 'passport';
-import routes from './routes/index.js';
+import router from './routes/index.js';
 import './config/passport.js';
 const app = express();
 app.use(express.json());
@@ -19,6 +19,5 @@ const port = 9090;
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 });
+app.use(router);
 export { app };
-app.use(routes);
-/* -----uncomment to see session and passport info----- */
