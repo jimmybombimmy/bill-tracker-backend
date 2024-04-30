@@ -2,7 +2,6 @@ import express from 'express'
 import databaseUse from './config/session.js'
 import passport from 'passport';
 import routes from './routes/index.js'
-import session from './config/session.js'
 
 import './config/passport.js'
 
@@ -11,8 +10,6 @@ const app: express.Express = express();
 
 app.use(express.json())
 app.use(databaseUse)
-
-app.use(session)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -26,6 +23,10 @@ app.use((req, res, next) => {
   next()
 })
 
+const port = 9090  
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+}); 
 export {app} 
 
 app.use(routes);
@@ -38,8 +39,5 @@ app.use(routes);
 /* -----uncomment to see session and passport info----- */
 
 
-// const port = 9090  
-// app.listen(port, () => {
-//   console.log(`Server is running at http://localhost:${port}`);
-// }); 
+
 
